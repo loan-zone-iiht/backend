@@ -6,41 +6,32 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "loan_customers_boot")
-public class Customer {
+public class Manager {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-	@Column(name = "acc_no", length = 25)
-	private String accountNo;	
 	@Column(length = 25)
 	private String name;
 	@Column(length = 25)
 	private String email;
 	@Column(length = 15)
 	private String phone;
-	@OneToOne
-	@JoinColumn(name = "pan_no")
-	private Pan panNo;
-	@OneToOne
-	@JoinColumn(name = "loan_details_id")
-	private LoanDetails lodaDetailsId;
+	@OneToMany(mappedBy = "mgrId")
+	private LoanDetails loanDetailsId;
 	
-	
-	
-	public Customer() {
+	public Manager() {
 	}
-	
-	public Customer(String accountNo, String name, String email, String phone, Pan panNo) {
-		this.accountNo = accountNo;
+
+	public Manager(String name, String email, String phone) {
 		this.name = name;
 		this.email = email;
 		this.phone = phone;
-		this.panNo = panNo;
 	}
 
 	public int getId() {
@@ -49,14 +40,6 @@ public class Customer {
 
 	public void setId(int id) {
 		this.id = id;
-	}
-
-	public String getAccountNo() {
-		return accountNo;
-	}
-
-	public void setAccountNo(String accountNo) {
-		this.accountNo = accountNo;
 	}
 
 	public String getName() {
@@ -83,12 +66,17 @@ public class Customer {
 		this.phone = phone;
 	}
 
-	public Pan getPanNo() {
-		return panNo;
+	public LoanDetails getLoanDetailsId() {
+		return loanDetailsId;
 	}
 
-	public void setPanNo(Pan panNo) {
-		this.panNo = panNo;
+	public void setLoanDetailsId(LoanDetails loanDetailsId) {
+		this.loanDetailsId = loanDetailsId;
+	}
+
+	@Override
+	public String toString() {
+		return "Manager [id=" + id + ", name=" + name + ", email=" + email + ", phone=" + phone + "]";
 	}
 	
 	
