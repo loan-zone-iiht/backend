@@ -1,11 +1,14 @@
 package com.ibm.entity;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -15,32 +18,31 @@ public class Customer {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-	@Column(name = "acc_no", length = 25)
-	private String accountNo;	
+	@OneToOne // can have one pan no
+	@JoinColumn(name = "pan_no")
+	private Pan panNo;
+	@OneToOne // can have one loan details at a time
+	@JoinColumn(name = "loan_details_id")
+	private LoanDetails loanDetailsId;
+	@OneToMany(mappedBy = "custId") // can have multiple nextPayback
+	private List<NextPayback> nextPaybacks;
+//	@Column(name = "acc_no", length = 25)
+//	private String accountNo;	
 	@Column(length = 25)
 	private String name;
 	@Column(length = 25)
 	private String email;
 	@Column(length = 15)
 	private String phone;
-	@OneToOne
-	@JoinColumn(name = "pan_no")
-	private Pan panNo;
-	@OneToOne
-	@JoinColumn(name = "loan_details_id")
-	private LoanDetails lodaDetailsId;
-	
-	
-	
+
 	public Customer() {
 	}
-	
-	public Customer(String accountNo, String name, String email, String phone, Pan panNo) {
-		this.accountNo = accountNo;
+
+	public Customer(Pan panNo, String name, String email, String phone) {
+		this.panNo = panNo;
 		this.name = name;
 		this.email = email;
 		this.phone = phone;
-		this.panNo = panNo;
 	}
 
 	public int getId() {
@@ -51,12 +53,28 @@ public class Customer {
 		this.id = id;
 	}
 
-	public String getAccountNo() {
-		return accountNo;
+	public Pan getPanNo() {
+		return panNo;
 	}
 
-	public void setAccountNo(String accountNo) {
-		this.accountNo = accountNo;
+	public void setPanNo(Pan panNo) {
+		this.panNo = panNo;
+	}
+
+	public LoanDetails getLoanDetailsId() {
+		return loanDetailsId;
+	}
+
+	public void setLoanDetailsId(LoanDetails loanDetailsId) {
+		this.loanDetailsId = loanDetailsId;
+	}
+
+	public List<NextPayback> getNextPaybacks() {
+		return nextPaybacks;
+	}
+
+	public void setNextPaybacks(List<NextPayback> nextPaybacks) {
+		this.nextPaybacks = nextPaybacks;
 	}
 
 	public String getName() {
@@ -83,15 +101,10 @@ public class Customer {
 		this.phone = phone;
 	}
 
-	public Pan getPanNo() {
-		return panNo;
+	@Override
+	public String toString() {
+		return "Customer [id=" + id + ", panNo=" + panNo + ", name=" + name + ", email=" + email + ", phone=" + phone
+				+ "]";
 	}
 
-	public void setPanNo(Pan panNo) {
-		this.panNo = panNo;
-	}
-	
-	
-	
-	
 }

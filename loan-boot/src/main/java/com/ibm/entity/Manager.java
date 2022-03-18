@@ -1,5 +1,8 @@
 package com.ibm.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,15 +19,15 @@ public class Manager {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+	@OneToMany(mappedBy = "mgrId")
+	private List<LoanDetails> loanDetails = new ArrayList<LoanDetails>();
 	@Column(length = 25)
 	private String name;
 	@Column(length = 25)
 	private String email;
 	@Column(length = 15)
 	private String phone;
-	@OneToMany(mappedBy = "mgrId")
-	private LoanDetails loanDetailsId;
-	
+
 	public Manager() {
 	}
 
@@ -66,20 +69,17 @@ public class Manager {
 		this.phone = phone;
 	}
 
-	public LoanDetails getLoanDetailsId() {
-		return loanDetailsId;
+	public List<LoanDetails> getLoanDetails() {
+		return loanDetails;
 	}
 
-	public void setLoanDetailsId(LoanDetails loanDetailsId) {
-		this.loanDetailsId = loanDetailsId;
+	public void setLoanDetails(List<LoanDetails> loanDetails) {
+		this.loanDetails = loanDetails;
 	}
 
 	@Override
 	public String toString() {
 		return "Manager [id=" + id + ", name=" + name + ", email=" + email + ", phone=" + phone + "]";
 	}
-	
-	
-	
-	
+
 }

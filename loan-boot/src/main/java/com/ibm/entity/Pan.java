@@ -15,11 +15,11 @@ public class Pan {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int no;
-	@Column(name = "cibil_score")
-	private int cibilScore;	
 	@OneToOne
 	@JoinColumn(name = "cust_id")
 	private Customer custId;
+	@Column(name = "cibil_score")
+	private int cibilScore;	
 	
 	public Pan() {
 	}
