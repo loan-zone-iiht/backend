@@ -1,5 +1,6 @@
 package com.ibm.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -24,16 +25,19 @@ public class Customer {
 	@OneToOne // can have one loan details at a time
 	@JoinColumn(name = "loan_details_id")
 	private LoanDetails loanDetailsId;
-	@OneToMany(mappedBy = "custId") // can have multiple nextPayback
-	private List<NextPayback> nextPaybacks;
-//	@Column(name = "acc_no", length = 25)
-//	private String accountNo;	
+	@OneToMany(mappedBy = "custId") // can have multiple payment histories
+	private List<PaymentHistory> paymentHistories = new ArrayList<PaymentHistory>();
 	@Column(length = 25)
 	private String name;
 	@Column(length = 25)
 	private String email;
 	@Column(length = 15)
 	private String phone;
+	private double salary;
+//	@Column(name = "acc_no", length = 25)
+//	private String accountNo;	
+//	@OneToMany(mappedBy = "custId") // can have multiple nextPayback
+//	private List<NextPayback> nextPaybacks = new ArrayList<NextPayback>();
 
 	public Customer() {
 	}
@@ -69,14 +73,6 @@ public class Customer {
 		this.loanDetailsId = loanDetailsId;
 	}
 
-	public List<NextPayback> getNextPaybacks() {
-		return nextPaybacks;
-	}
-
-	public void setNextPaybacks(List<NextPayback> nextPaybacks) {
-		this.nextPaybacks = nextPaybacks;
-	}
-
 	public String getName() {
 		return name;
 	}
@@ -99,6 +95,14 @@ public class Customer {
 
 	public void setPhone(String phone) {
 		this.phone = phone;
+	}
+
+	public double getSalary() {
+		return salary;
+	}
+
+	public void setSalary(double salary) {
+		this.salary = salary;
 	}
 
 	@Override
