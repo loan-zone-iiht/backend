@@ -14,6 +14,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 enum FromOptions {
 	BANK, CUSTOMER;
 }
@@ -32,12 +34,14 @@ public class PaymentHistory {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+//	@JsonBackReference
 	@ManyToOne
 	@JoinColumn(name = "cust_id")
-	private Customer custId;
+	private Customer customer;
+//	@JsonBackReference
 	@ManyToOne
 	@JoinColumn(name = "loan_details_id")
-	private LoanDetails loanDetailsId;
+	private LoanDetails loanDetails;
 	@Column(name = "payment_amount")
 	private double paymentAmount;
 	@Column(name = "payment_date")
@@ -58,11 +62,10 @@ public class PaymentHistory {
 	public PaymentHistory() {
 	}
 
-	public PaymentHistory(int id, Customer custId, LoanDetails loanDetailsId, double paymentAmount,
+	public PaymentHistory(Customer customer, LoanDetails loanDetails, double paymentAmount,
 			LocalDate paymentDate, FromOptions paymentFrom, FromOptions paymentMethod, FromOptions paymentType) {
-		this.id = id;
-		this.custId = custId;
-		this.loanDetailsId = loanDetailsId;
+		this.customer = customer;
+		this.loanDetails = loanDetails;
 		this.paymentAmount = paymentAmount;
 		this.paymentDate = paymentDate;
 		this.paymentFrom = paymentFrom;
@@ -78,20 +81,20 @@ public class PaymentHistory {
 		this.id = id;
 	}
 
-	public Customer getCustId() {
-		return custId;
+	public Customer getCustomer() {
+		return customer;
 	}
 
-	public void setCustId(Customer custId) {
-		this.custId = custId;
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
 	}
 
-	public LoanDetails getLoanDetailsId() {
-		return loanDetailsId;
+	public LoanDetails getLoanDetails() {
+		return loanDetails;
 	}
 
-	public void setLoanDetailsId(LoanDetails loanDetailsId) {
-		this.loanDetailsId = loanDetailsId;
+	public void setLoanDetails(LoanDetails loanDetails) {
+		this.loanDetails = loanDetails;
 	}
 
 	public double getPaymentAmount() {

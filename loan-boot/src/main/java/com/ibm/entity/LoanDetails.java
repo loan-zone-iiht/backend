@@ -18,6 +18,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 enum StatusType {
 	ACCEPTED, REJECTED, PENDING, FORECLOSURE_PENDING, FORECLOSURE_ACCEPTED;
 }
@@ -30,11 +33,13 @@ public class LoanDetails {
 	private int loanId;
 	@OneToOne
 	@JoinColumn(name = "cust_id") // can have one customer
-	private Customer custId;
+	private Customer customer;
+//	@JsonBackReference
 	@ManyToOne
 	@JoinColumn(name = "manager_id") // can be approved by multiple manager
-	private Manager mgrId;
-	@OneToMany(mappedBy = "loanDetailsId") // can have multiple payment histories
+	private Manager manager;
+//	@JsonManagedReference
+	@OneToMany(mappedBy = "loanDetails") // can have multiple payment histories
 	private List<PaymentHistory> paymentHistories = new ArrayList<PaymentHistory>();
 	@Column(name = "loan_principal")
 	private double loanPrincipal;
@@ -66,8 +71,8 @@ public class LoanDetails {
 	public LoanDetails(Customer custId, Manager mgrId, double loanPrincipal, double loanTenure, double loanInterestRate,
 			double loanFrequency, LocalDate applicationDate, LocalDate dateBegin, LocalDate dateEnd,
 			boolean bankToCustPayout, double outstandingPrincipal, StatusType loanStatus) {
-		this.custId = custId;
-		this.mgrId = mgrId;
+		this.customer = custId;
+		this.manager = mgrId;
 		this.loanPrincipal = loanPrincipal;
 		this.loanTenure = loanTenure;
 		this.loanInterestRate = loanInterestRate;
@@ -88,20 +93,13 @@ public class LoanDetails {
 		this.loanId = loanId;
 	}
 
-	public Customer getCustId() {
-		return custId;
+
+	public Manager getManager() {
+		return manager;
 	}
 
-	public void setCustId(Customer custId) {
-		this.custId = custId;
-	}
-
-	public Manager getMgrId() {
-		return mgrId;
-	}
-
-	public void setMgrId(Manager mgrId) {
-		this.mgrId = mgrId;
+	public void setManager(Manager manager) {
+		this.manager = manager;
 	}
 
 
@@ -183,6 +181,22 @@ public class LoanDetails {
 
 	public void setLoanStatus(StatusType loanStatus) {
 		this.loanStatus = loanStatus;
+	}
+
+	public Customer getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
+	}
+
+	public List<PaymentHistory> getPaymentHistories() {
+		return paymentHistories;
+	}
+
+	public void setPaymentHistories(List<PaymentHistory> paymentHistories) {
+		this.paymentHistories = paymentHistories;
 	}
 
 	@Override

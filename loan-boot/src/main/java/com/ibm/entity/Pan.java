@@ -9,33 +9,37 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
+//@JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name = "loan_pan_boot")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "panNo") // json infy
 public class Pan {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int no;
+	private String panNo;
 	@OneToOne
 	@JoinColumn(name = "cust_id")
-	private Customer custId;
+	private Customer customer;
 	@Column(name = "cibil_score")
-	private int cibilScore;	
-	
+	private int cibilScore;
+
 	public Pan() {
 	}
 
-	public Pan(int no, int cibilScore, Customer custId) {
-		this.no = no;
+	public Pan(String panNo, int cibilScore) {
+		this.panNo = panNo;
 		this.cibilScore = cibilScore;
-		this.custId = custId;
 	}
 
-	public int getNo() {
-		return no;
+	public String getPanNo() {
+		return panNo;
 	}
 
-	public void setNo(int no) {
-		this.no = no;
+	public void setPanNo(String panNo) {
+		this.panNo = panNo;
 	}
 
 	public int getCibilScore() {
@@ -46,20 +50,17 @@ public class Pan {
 		this.cibilScore = cibilScore;
 	}
 
-	public Customer getCustId() {
-		return custId;
+	public Customer getCustomer() {
+		return customer;
 	}
 
-	public void setCustId(Customer custId) {
-		this.custId = custId;
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
 	}
 
 	@Override
 	public String toString() {
-		return "Pan [no=" + no + ", cibilScore=" + cibilScore + "]";
+		return "Pan [no=" + panNo + ", cibilScore=" + cibilScore + "]";
 	}
-	
-	
-	
-	
+
 }

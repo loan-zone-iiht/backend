@@ -13,24 +13,40 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
+
+//@JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name = "loan_customers_boot")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id") // json infy
 public class Customer {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+//	@JsonIgnore
 	@OneToOne // can have one pan no
 	@JoinColumn(name = "pan_no")
-	private Pan panNo;
+	private Pan pan;
 	@OneToOne // can have one loan details at a time
-	@JoinColumn(name = "loan_details_id")
-	private LoanDetails loanDetailsId;
-	@OneToMany(mappedBy = "custId") // can have multiple payment histories
+	@JoinColumn(name = "loan_detail_id")
+	private LoanDetails loanDetail;
+//	@JsonManagedReference
+	@OneToMany(mappedBy = "customer") // can have multiple payment histories
 	private List<PaymentHistory> paymentHistories = new ArrayList<PaymentHistory>();
 	@Column(length = 25)
 	private String name;
 	@Column(length = 25)
 	private String email;
+	@JsonProperty(access = Access.WRITE_ONLY)
+	@Column(length = 50)
+	private String password;
 	@Column(length = 15)
 	private String phone;
 	private double salary;
@@ -42,12 +58,14 @@ public class Customer {
 	public Customer() {
 	}
 
-	public Customer(Pan panNo, String name, String email, String phone) {
-		this.panNo = panNo;
+	public Customer(Pan pan, String name, String email, String phone) {
+		this.pan = pan;
 		this.name = name;
 		this.email = email;
 		this.phone = phone;
 	}
+	
+
 
 	public int getId() {
 		return id;
@@ -57,21 +75,14 @@ public class Customer {
 		this.id = id;
 	}
 
-	public Pan getPanNo() {
-		return panNo;
+	public Pan getPan() {
+		return pan;
 	}
 
-	public void setPanNo(Pan panNo) {
-		this.panNo = panNo;
+	public void setPan(Pan pan) {
+		this.pan = pan;
 	}
 
-	public LoanDetails getLoanDetailsId() {
-		return loanDetailsId;
-	}
-
-	public void setLoanDetailsId(LoanDetails loanDetailsId) {
-		this.loanDetailsId = loanDetailsId;
-	}
 
 	public String getName() {
 		return name;
@@ -105,9 +116,34 @@ public class Customer {
 		this.salary = salary;
 	}
 
+	
+	public LoanDetails getLoanDetail() {
+		return loanDetail;
+	}
+
+	public void setLoanDetail(LoanDetails loanDetail) {
+		this.loanDetail = loanDetail;
+	}
+
+	public List<PaymentHistory> getPaymentHistories() {
+		return paymentHistories;
+	}
+
+	public void setPaymentHistories(List<PaymentHistory> paymentHistories) {
+		this.paymentHistories = paymentHistories;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	
 	@Override
 	public String toString() {
-		return "Customer [id=" + id + ", panNo=" + panNo + ", name=" + name + ", email=" + email + ", phone=" + phone
+		return "Customer [id=" + id + ", panNo=" + pan + ", name=" + name + ", email=" + email + ", phone=" + phone
 				+ "]";
 	}
 

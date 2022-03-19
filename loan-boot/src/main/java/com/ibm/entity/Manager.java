@@ -13,13 +13,17 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
-@Table(name = "loan_customers_boot")
+@Table(name = "loan_managers_boot")
 public class Manager {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-	@OneToMany(mappedBy = "mgrId")
+//	@JsonManagedReference
+	@OneToMany(mappedBy = "manager")
 	private List<LoanDetails> loanDetails = new ArrayList<LoanDetails>();
 	@Column(length = 25)
 	private String name;
