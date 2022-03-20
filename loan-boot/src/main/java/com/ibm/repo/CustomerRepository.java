@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.ibm.entity.Customer;
 import com.ibm.entity.Pan;
 
-public interface CustomerRepository extends JpaRepository<Customer, Integer>{
+public interface CustomerRepository extends JpaRepository<Customer, Integer> {
 	Customer findByPan(Pan p);
-	
+
 }

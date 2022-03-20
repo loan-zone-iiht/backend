@@ -3,7 +3,6 @@ package com.ibm.service;
 import java.util.List;
 
 import com.ibm.entity.Customer;
-import com.ibm.entity.Pan;
 
 public interface CustomerService {
 	Customer createCustomer(Customer cust, String panNo);

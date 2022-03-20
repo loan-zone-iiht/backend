@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import com.ibm.entity.Customer;
 import com.ibm.entity.Pan;
 import com.ibm.repo.CustomerRepository;
-import com.ibm.repo.PanRepository;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {

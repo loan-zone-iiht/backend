@@ -93,7 +93,6 @@ public class LoanDetails {
 		this.loanId = loanId;
 	}
 
-
 	public Manager getManager() {
 		return manager;
 	}
@@ -101,7 +100,6 @@ public class LoanDetails {
 	public void setManager(Manager manager) {
 		this.manager = manager;
 	}
-
 
 	public double getLoanPrincipal() {
 		return loanPrincipal;
