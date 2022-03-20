@@ -1,5 +1,7 @@
 package com.ibm.rest;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,9 +33,13 @@ public class CustomerController {
 
 	}
 
-	@GetMapping(path = "/get-customer/{id}", produces = "application/json")
+	@GetMapping(path = "/get-customers/{id}", produces = "application/json")
 	public Customer getPanByPanNo(@PathVariable int id) {
 		return customerService.getCustomerById(id);
+	}
+	@GetMapping(path = "/get-customers", produces = "application/json")
+	public List<Customer> getAllCustomers() {
+		return customerService.getAllCustomers();
 	}
 
 	@GetMapping(path = "/get-customer-by-pan", produces = "application/json")

@@ -1,5 +1,7 @@
 package com.ibm.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +42,11 @@ public class PanServiceImpl implements PanService {
 	public int getCibilScore(int custId) {
 		Customer cust = customerRepo.findById(custId).get();
 		return panRepo.getCibilScore(cust);
+	}
+
+	@Override
+	public List<Pan> getAllPans() {
+		return panRepo.findAll();
 	}
 
 }

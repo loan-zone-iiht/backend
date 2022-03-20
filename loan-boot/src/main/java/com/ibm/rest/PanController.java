@@ -1,5 +1,7 @@
 package com.ibm.rest;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,9 +33,14 @@ public class PanController {
 //		return "Pan updated. Details: "+updatedPan;
 	}
 	
-	@GetMapping(path = "/get-pan/{panNo}", produces = "application/json")
+	@GetMapping(path = "/get-pans/{panNo}", produces = "application/json")
 	public Pan getPanByPanNo(@PathVariable String panNo) {
 		return panService.getPanByPanNo(panNo);
+	}
+	
+	@GetMapping(path = "/get-pans/", produces = "application/json")
+	public List<Pan> getAllPans() {
+		return panService.getAllPans();
 	}
 	
 	@GetMapping(path = "/get-pan-by-customer", produces = "application/json")

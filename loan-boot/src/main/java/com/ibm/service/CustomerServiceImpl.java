@@ -1,5 +1,7 @@
 package com.ibm.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,6 +40,11 @@ public class CustomerServiceImpl implements CustomerService {
 	@Override
 	public Customer getCustomerById(int id) {
 		return customerRepo.findById(id).get();
+	}
+
+	@Override
+	public List<Customer> getAllCustomers() {
+		return customerRepo.findAll();
 	}
 
 }
