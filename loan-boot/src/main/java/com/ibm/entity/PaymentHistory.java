@@ -13,6 +13,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 enum FromOptions {
 	BANK, CUSTOMER;
 }
@@ -27,6 +30,7 @@ enum PaymentType {
 
 @Entity
 @Table(name = "loan_payment_history_boot")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id") // json infy
 public class PaymentHistory {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -59,8 +63,8 @@ public class PaymentHistory {
 	public PaymentHistory() {
 	}
 
-	public PaymentHistory(Customer customer, LoanDetails loanDetails, double paymentAmount,
-			LocalDate paymentDate, FromOptions paymentFrom, PaymentMethod paymentMethod, PaymentType paymentType) {
+	public PaymentHistory(Customer customer, LoanDetails loanDetails, double paymentAmount, LocalDate paymentDate,
+			FromOptions paymentFrom, PaymentMethod paymentMethod, PaymentType paymentType) {
 		this.customer = customer;
 		this.loanDetails = loanDetails;
 		this.paymentAmount = paymentAmount;
