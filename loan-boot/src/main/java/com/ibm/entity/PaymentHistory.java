@@ -48,10 +48,10 @@ public class PaymentHistory {
 	private FromOptions paymentFrom;
 	@Enumerated(EnumType.STRING) // only can have 4 types of values
 	@Column(name = "payment_method", length = 25)
-	private FromOptions paymentMethod;
+	private PaymentMethod paymentMethod;
 	@Enumerated(EnumType.STRING) // only can have 3 types of values
 	@Column(name = "payment_type", length = 25)
-	private FromOptions paymentType;
+	private PaymentType paymentType;
 //	@OneToOne // can have one nextpayback association
 //	@JoinColumn(name = "next_payback_id")
 //	private NextPayback nextPaybackId;
@@ -60,7 +60,7 @@ public class PaymentHistory {
 	}
 
 	public PaymentHistory(Customer customer, LoanDetails loanDetails, double paymentAmount,
-			LocalDate paymentDate, FromOptions paymentFrom, FromOptions paymentMethod, FromOptions paymentType) {
+			LocalDate paymentDate, FromOptions paymentFrom, PaymentMethod paymentMethod, PaymentType paymentType) {
 		this.customer = customer;
 		this.loanDetails = loanDetails;
 		this.paymentAmount = paymentAmount;
@@ -118,19 +118,19 @@ public class PaymentHistory {
 		this.paymentFrom = paymentFrom;
 	}
 
-	public FromOptions getPaymentMethod() {
+	public PaymentMethod getPaymentMethod() {
 		return paymentMethod;
 	}
 
-	public void setPaymentMethod(FromOptions paymentMethod) {
+	public void setPaymentMethod(PaymentMethod paymentMethod) {
 		this.paymentMethod = paymentMethod;
 	}
 
-	public FromOptions getPaymentType() {
+	public PaymentType getPaymentType() {
 		return paymentType;
 	}
 
-	public void setPaymentType(FromOptions paymentType) {
+	public void setPaymentType(PaymentType paymentType) {
 		this.paymentType = paymentType;
 	}
 
