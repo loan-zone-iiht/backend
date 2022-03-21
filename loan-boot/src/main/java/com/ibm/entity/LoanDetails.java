@@ -19,14 +19,15 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.ibm.enums.StatusType;
 
-enum StatusType {
-	ACCEPTED, REJECTED, PENDING, FORECLOSURE_PENDING, FORECLOSURE_ACCEPTED;
-}
 
 @Entity
 @Table(name = "loan_loan_details_boot")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "loanId") // json infy
 public class LoanDetails {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
