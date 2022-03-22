@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ibm.entity.Customer;
 import com.ibm.entity.LoanDetails;
 import com.ibm.enums.StatusType;
+import com.ibm.pojo.UpdateLoanDetailsByStatus;
 import com.ibm.service.LoanDetailsService;
 
 @RestController
@@ -40,16 +41,15 @@ public class LoanDetailsClass {
 //	public List<LoanDetails> upadteLoanDetails(@RequestParam Map<String,String> reqParamMap) {
 //	reqParamMap.entrySet();
 	@PostMapping(path = "/update-loandetails-by-status", consumes = "application/json")
-	public LoanDetails upadteLoanDetails(@RequestParam(name = "status") StatusType status,
-			@RequestParam(required = false, name = "loanId") int loanId, 
-			@RequestParam(required = false, name = "custId") int custId) {
+	public LoanDetails upadteLoanDetails(@RequestBody UpdateLoanDetailsByStatus reqPojo) {
 //		System.err.println(status);
+		//creating enums
 //		StatusType sType = Enum.valueOf(StatusType.class, status);
 //		System.err.println(sType);
-		if(loanId != 0) {
-			return loanDetailsService.updateLoanStatusFromLoanId(loanId, status);
-		}else if(custId != 0) {			
-			return loanDetailsService.updateLoanStatusFromCustId(custId, status);
+		if(reqPojo.getLoanId() != 0) {
+			return loanDetailsService.updateLoanStatusFromLoanId(reqPojo.getLoanId(), reqPojo.getStatus());
+		}else if(reqPojo.getCustId() != 0) {			
+			return loanDetailsService.updateLoanStatusFromCustId(reqPojo.getCustId(), reqPojo.getStatus());
 		}else {
 			return null;
 		}

@@ -23,13 +23,26 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 	@Override
 	public LoanDetails createLoanDetails(LoanDetails ld, int custId) {
 		Customer cust = customerRepo.findById(custId).get();
-		if(cust.getLoanDetail() == null) { // add completed/rejected check
+		StatusType statusRej = Enum.valueOf(StatusType.class, "REJECTED");
+		StatusType status2Comp = Enum.valueOf(StatusType.class, "COMPLETED");
+		if (cust.getLoanDetail() == null || cust.getLoanDetail().getLoanStatus() == statusRej
+				|| cust.getLoanDetail().getLoanStatus() == status2Comp) { 
+			// can add loanDetail if there's no ongoing loan
+			
+			// setting customer to the loanDetail
 			ld.setCustomer(cust);
 			ld.setApplicationDate(LocalDate.now());
 			ld.setLoanStatus(StatusType.PENDING);
-			return loanDetailsRepo.save(ld);			
+			
+			// setting loanDetail to the customer
+			cust.setLoanDetail(ld);
+			
+			//saving
+			loanDetailsRepo.save(ld); // save the new obj (loanDetails) before the customer
+			customerRepo.save(cust);
+			return ld;
 		}
-		return null; /// handle
+		return null; /// handle error
 	}
 
 	@Override
@@ -49,11 +62,11 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 		loanDetailsRepo.save(ld);
 		return ld;
 	}
-	
+
 	@Override
 	public LoanDetails updateLoanStatusFromCustId(int custId, StatusType status) {
 		Customer cust = customerRepo.findById(custId).get();
-		LoanDetails ld = loanDetailsRepo.findAllByCustomer(cust);
+		LoanDetails ld = cust.getLoanDetail();
 		ld.setLoanStatus(status);
 		loanDetailsRepo.save(ld);
 		return ld;
