@@ -15,18 +15,9 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-
-enum FromOptions {
-	BANK, CUSTOMER;
-}
-
-enum PaymentMethod {
-	UPI, CREDIT_CARD, DEBIT_CARD, BANK_TRANSFER;
-}
-
-enum PaymentType {
-	REGULAR, DOWNPAYMENT, FORECLOSURE;
-}
+import com.ibm.enums.FromOptions;
+import com.ibm.enums.PaymentMethod;
+import com.ibm.enums.PaymentType;
 
 @Entity
 @Table(name = "loan_payment_history_boot")
