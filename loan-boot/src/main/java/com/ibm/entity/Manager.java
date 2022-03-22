@@ -12,7 +12,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 @Entity
 @Table(name = "loan_managers_boot")
@@ -26,10 +28,13 @@ public class Manager {
 	private List<LoanDetails> loanDetails = new ArrayList<LoanDetails>();
 	@Column(length = 25)
 	private String name;
-	@Column(length = 25)
+	@Column(unique = true, length = 25)
 	private String email;
 	@Column(length = 15)
 	private String phone;
+	@Column(length = 50)
+	@JsonProperty(access = Access.WRITE_ONLY)
+	private String password;
 
 	public Manager() {
 	}
@@ -70,6 +75,14 @@ public class Manager {
 
 	public void setPhone(String phone) {
 		this.phone = phone;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	public List<LoanDetails> getLoanDetails() {

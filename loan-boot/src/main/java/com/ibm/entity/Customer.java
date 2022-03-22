@@ -38,7 +38,7 @@ public class Customer {
 	private List<PaymentHistory> paymentHistories = new ArrayList<PaymentHistory>();
 	@Column(length = 25)
 	private String name;
-	@Column(length = 25)
+	@Column(unique = true, length = 25)
 	private String email;
 	@JsonProperty(access = Access.WRITE_ONLY)
 	@Column(length = 50)

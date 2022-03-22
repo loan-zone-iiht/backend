@@ -2,15 +2,19 @@ package com.ibm.rest;
 
 import java.util.List;
 
+import org.hibernate.annotations.NotFound;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.ibm.entity.Customer;
+import com.ibm.exception.GlobalLoanException;
 import com.ibm.service.CustomerService;
 
 @RestController
@@ -27,13 +31,23 @@ public class CustomerController {
 
 	@PostMapping(path = "/update-customer", consumes = "application/json")
 	public Customer updateCustomer(@RequestBody Customer cust) {
-		return customerService.updateCustomer(cust);
+		try {
+			return customerService.updateCustomer(cust);
+		} catch (GlobalLoanException e) {
+			e.printStackTrace();
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+		}
 
 	}
 
 	@GetMapping(path = "/get-customers/{id}", produces = "application/json")
 	public Customer getPanByPanNo(@PathVariable int id) {
-		return customerService.getCustomerById(id);
+		try {
+			return customerService.getCustomerById(id);
+		} catch (RuntimeException e) {
+			e.printStackTrace();
+			throw new RuntimeException(e.getMessage(),e);
+		}
 	}
 	@GetMapping(path = "/get-customers", produces = "application/json")
 	public List<Customer> getAllCustomers() {
@@ -42,7 +56,11 @@ public class CustomerController {
 
 	@GetMapping(path = "/get-customer-by-pan", produces = "application/json")
 	public Customer getPanByCustomer(@RequestParam String panNo) {
-		return customerService.getCustomerByPan(panNo);
+		try {
+			return customerService.getCustomerByPan(panNo);
+		} catch (GlobalLoanException e) {			
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND,e.getMessage(),e);
+		}
 	}
 
 }

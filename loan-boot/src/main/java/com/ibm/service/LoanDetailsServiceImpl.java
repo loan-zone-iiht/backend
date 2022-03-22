@@ -8,9 +8,12 @@ import org.springframework.stereotype.Service;
 
 import com.ibm.entity.Customer;
 import com.ibm.entity.LoanDetails;
+import com.ibm.entity.Manager;
 import com.ibm.enums.StatusType;
+import com.ibm.exception.GlobalLoanException;
 import com.ibm.repo.CustomerRepository;
 import com.ibm.repo.LoanDetailsRepository;
+import com.ibm.repo.ManagerRepository;
 
 @Service
 public class LoanDetailsServiceImpl implements LoanDetailsService {
@@ -19,6 +22,8 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 	private LoanDetailsRepository loanDetailsRepo;
 	@Autowired
 	private CustomerRepository customerRepo;
+	@Autowired
+	private ManagerRepository managerRepo;
 
 	@Override
 	public LoanDetails createLoanDetails(LoanDetails ld, int custId) {
@@ -37,12 +42,17 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 			// setting loanDetail to the customer
 			cust.setLoanDetail(ld);
 			
+			// setting (random)manager to loanDetails
+			Manager mgr =  managerRepo.getRandomManager();
+			ld.setManager(mgr);
+			
 			//saving
 			loanDetailsRepo.save(ld); // save the new obj (loanDetails) before the customer
 			customerRepo.save(cust);
 			return ld;
+		}else {
+			throw new  GlobalLoanException("409","Customer already has an ongoing loan");
 		}
-		return null; /// handle error
 	}
 
 	@Override
@@ -94,7 +104,7 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 	}
 
 	@Override
-	public LoanDetails updaLoanDetails(LoanDetails ld) {
+	public LoanDetails updateLoanDetails(LoanDetails ld) {
 		return loanDetailsRepo.save(ld);
 	}
 
