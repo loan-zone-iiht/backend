@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.ibm.entity.Customer;
 import com.ibm.entity.Pan;
+import com.ibm.exception.GlobalLoanException;
 import com.ibm.repo.CustomerRepository;
 import com.ibm.repo.PanRepository;
 
@@ -23,23 +24,24 @@ public class PanServiceImpl implements PanService {
 	}
 
 	@Override
-	public Pan updatePan(Pan p) {
+	public Pan updatePan(Pan p) throws GlobalLoanException{
 		return panRepo.save(p);
 	}
 
 	@Override
-	public Pan getPanByPanNo(String panNo) {
-		return panRepo.findById(panNo).get();
+	public Pan getPanByPanNo(String panNo) throws GlobalLoanException{
+		return panRepo.findById(panNo)
+				.orElseThrow(() -> new GlobalLoanException("404", "panNo not found"));
 	}
 
 	@Override
-	public Pan getPanByCustomerId(int custId) {
+	public Pan getPanByCustomerId(int custId) throws GlobalLoanException{
 		Customer cust = customerRepo.findById(custId).get();
 		return panRepo.findByCustomer(cust);
 	}
 
 	@Override
-	public int getCibilScore(int custId) {
+	public int getCibilScore(int custId) throws GlobalLoanException{
 		Customer cust = customerRepo.findById(custId).get();
 		return panRepo.getCibilScore(cust);
 	}

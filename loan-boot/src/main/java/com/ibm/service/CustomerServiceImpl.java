@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.ibm.entity.Customer;
 import com.ibm.entity.Pan;
+import com.ibm.exception.GlobalLoanException;
 import com.ibm.repo.CustomerRepository;
 
 @Service
@@ -26,19 +27,20 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
-	public Customer updateCustomer(Customer cust) {
+	public Customer updateCustomer(Customer cust) throws GlobalLoanException {
 		return customerRepo.save(cust);
 	}
 
 	@Override
-	public Customer getCustomerByPan(String panNo) {
+	public Customer getCustomerByPan(String panNo) throws GlobalLoanException {
 		Pan p = panService.getPanByPanNo(panNo);
 		return customerRepo.findByPan(p);
 	}
 
 	@Override
-	public Customer getCustomerById(int id) {
-		return customerRepo.findById(id).get();
+	public Customer getCustomerById(int id) throws GlobalLoanException {
+		return customerRepo.findById(id)
+				.orElseThrow(() -> new GlobalLoanException("404","Customer id not found"));
 	}
 
 	@Override
