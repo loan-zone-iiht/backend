@@ -41,7 +41,7 @@ public class CustomerController {
 	}
 
 	@GetMapping(path = "/get-customers/{id}", produces = "application/json")
-	public Customer getPanByPanNo(@PathVariable int id) {
+	public Customer getCustomersById(@PathVariable int id) {
 		try {
 			return customerService.getCustomerById(id);
 		} catch (RuntimeException e) {
@@ -55,7 +55,7 @@ public class CustomerController {
 	}
 
 	@GetMapping(path = "/get-customer-by-pan", produces = "application/json")
-	public Customer getPanByCustomer(@RequestParam String panNo) {
+	public Customer getCustomersByPan(@RequestParam String panNo) {
 		try {
 			return customerService.getCustomerByPan(panNo);
 		} catch (GlobalLoanException e) {			

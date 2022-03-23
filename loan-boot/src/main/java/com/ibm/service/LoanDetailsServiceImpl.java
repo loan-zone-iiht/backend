@@ -31,27 +31,27 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 		StatusType statusRej = Enum.valueOf(StatusType.class, "REJECTED");
 		StatusType status2Comp = Enum.valueOf(StatusType.class, "COMPLETED");
 		if (cust.getLoanDetail() == null || cust.getLoanDetail().getLoanStatus() == statusRej
-				|| cust.getLoanDetail().getLoanStatus() == status2Comp) { 
+				|| cust.getLoanDetail().getLoanStatus() == status2Comp) {
 			// can add loanDetail if there's no ongoing loan
-			
+
 			// setting customer to the loanDetail
 			ld.setCustomer(cust);
 			ld.setApplicationDate(LocalDate.now());
 			ld.setLoanStatus(StatusType.PENDING);
-			
+
 			// setting loanDetail to the customer
 			cust.setLoanDetail(ld);
-			
+
 			// setting (random)manager to loanDetails
-			Manager mgr =  managerRepo.getRandomManager();
+			Manager mgr = managerRepo.getRandomManager();
 			ld.setManager(mgr);
-			
-			//saving
+
+			// saving
 			loanDetailsRepo.save(ld); // save the new obj (loanDetails) before the customer
 			customerRepo.save(cust);
 			return ld;
-		}else {
-			throw new  GlobalLoanException("409","Customer already has an ongoing loan");
+		} else {
+			throw new GlobalLoanException("409", "Customer already has an ongoing loan");
 		}
 	}
 
@@ -59,6 +59,8 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 	public List<LoanDetails> getAllLoanDetails() {
 		return loanDetailsRepo.findAll();
 	}
+
+	
 
 	@Override
 	public List<LoanDetails> getLoandetailsByStatus(StatusType status) {
@@ -106,6 +108,12 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 	@Override
 	public LoanDetails updateLoanDetails(LoanDetails ld) {
 		return loanDetailsRepo.save(ld);
+	}
+	
+	@Override
+	public LoanDetails getLoanDetailsByLoanId(int loanId) {
+		return loanDetailsRepo.findById(loanId)
+				.orElseThrow(() -> new GlobalLoanException("404", "LoanDetails id not found"));
 	}
 
 }
