@@ -1,7 +1,11 @@
 package com.ibm.service;
 
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +15,7 @@ import com.ibm.entity.LoanDetails;
 import com.ibm.entity.Manager;
 import com.ibm.enums.StatusType;
 import com.ibm.exception.GlobalLoanException;
+import com.ibm.pojo.PaymentDetail;
 import com.ibm.repo.CustomerRepository;
 import com.ibm.repo.LoanDetailsRepository;
 import com.ibm.repo.ManagerRepository;
@@ -25,6 +30,17 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 	@Autowired
 	private ManagerService managerService;
 
+	// functional interface used to calc payments
+	Function<LoanDetails, PaymentDetail> paymentDetailCalculator = (ld) -> {
+
+		double rate = ld.getLoanInterestRate() / 100 / (12 / ld.getLoanFrequency());
+		int numberOfPayments = (int) (ld.getLoanTenure() * (12 / ld.getLoanFrequency()));
+
+		double paymentAmount = (rate * ld.getLoanPrincipal()) / (1 - Math.pow(1 + rate, -numberOfPayments));
+		double paymentAmountRounded = Math.round(paymentAmount * 100.0) / 100.0;
+		return new PaymentDetail(paymentAmountRounded, numberOfPayments);
+	};
+
 	@Override
 	public LoanDetails createLoanDetails(LoanDetails ld, int custId) {
 		Customer cust = custService.getCustomerById(custId);
@@ -38,7 +54,6 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 			ld.setCustomer(cust);
 			ld.setApplicationDate(LocalDate.now());
 			ld.setLoanStatus(StatusType.PENDING);
-			ld.setOutstandingPrincipal(ld.getLoanPrincipal());
 
 			// setting loanDetail to the customer
 			cust.setLoanDetail(ld);
@@ -61,8 +76,6 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 		return loanDetailsRepo.findAll();
 	}
 
-	
-
 	@Override
 	public List<LoanDetails> getLoandetailsByStatus(StatusType status) {
 		return loanDetailsRepo.findAllByLoanStatus(status);
@@ -71,15 +84,13 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 	@Override
 	public LoanDetails updateLoanStatusFromLoanId(int loanId, StatusType status) {
 		LoanDetails ld = loanDetailsRepo.findById(loanId).get();
-		ld.setLoanStatus(status);
-		loanDetailsRepo.save(ld);
-		return ld;
-	}
-
-	@Override
-	public LoanDetails updateLoanStatusFromCustId(int custId, StatusType status) {
-		Customer cust = custService.getCustomerById(custId);
-		LoanDetails ld = cust.getLoanDetail();
+		// logic for every status
+		if (status == status.ACCEPTED) {
+			PaymentDetail pd = paymentDetailCalculator.apply(ld);
+			ld.setPaymentAmount(pd.getPaymentAmount());
+			ld.setNoOfPayments(pd.getNumberOfPayments());
+			ld.setDateBegin(LocalDate.now());
+		}
 		ld.setLoanStatus(status);
 		loanDetailsRepo.save(ld);
 		return ld;
@@ -93,32 +104,56 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 		return ld;
 	}
 
-	@Override
-	public double getOutstandingPrincipal(int loanId) {
-		LoanDetails ld = loanDetailsRepo.findById(loanId).get();
-		return ld.getOutstandingPrincipal();
-	}
+//	@Override
+//	public double getOutstandingPrincipal(int loanId) {
+//		LoanDetails ld = loanDetailsRepo.findById(loanId).get();
+//		return ld.getOutstandingPrincipal();
+//	}
+//
+//	@Override
+//	public void updateOutstandingPrincipal(int loanId, double op) {
+//		LoanDetails ld = loanDetailsRepo.findById(loanId).get();
+//		ld.setOutstandingPrincipal(op);
+//		loanDetailsRepo.save(ld);
+//	}
 
 	@Override
-	public void updateOutstandingPrincipal(int loanId, double op) {
+	public double getPaymentAmount(int loanId) {
 		LoanDetails ld = loanDetailsRepo.findById(loanId).get();
-		ld.setOutstandingPrincipal(op);
-		loanDetailsRepo.save(ld);
-	}
 
-	
-	
-	@Override
-	public double paymentAmount(int loanId) {
-		//logic for calculating the payment
-		return 0;
+		double rate = ld.getLoanInterestRate() / 100 / (12 / ld.getLoanFrequency());
+		int numberOfPayments = (int) (ld.getLoanTenure() * (12 / ld.getLoanFrequency()));
+
+		double paymentAmount = (rate * ld.getLoanPrincipal()) / (1 - Math.pow(1 + rate, -numberOfPayments));
+
+		return Math.round(paymentAmount);
+
+//		LoanDetails ld = loanDetailsRepo.findById(loanId).get();
+//		double EAR = Math.pow((1 + ld.getLoanInterestRate() / 100 / 12), 12) - 1;
+//		double pT = 12 / ld.getLoanFrequency();
+//		double nominalRate = pT * (Math.pow((1 + EAR), 1 / pT) - 1);
+//		int numberOfPeriod = (int) ((ld.getLoanTenure() * 12) / ld.getLoanFrequency());
+//		double rate = nominalRate / pT;
+//		double equatedInstallment = (ld.getOutstandingPrincipal() * rate * Math.pow(1 + rate, numberOfPeriod))
+//				/ (Math.pow(1 + rate, numberOfPeriod) - 1);
+//
+//		System.err.println("EAR: " + EAR + " nominalRate: " + nominalRate + " numberOfPeriod: " + numberOfPeriod
+//				+ " rate: " + rate + " equatedInstallment: " + equatedInstallment);
+//		
+//		
+////		int newOutstandingPrinciple = (equatedInstallment + Math.pow(1 + rate , x))
+//		
+//		return equatedInstallment;
+
+//		int numberOfPeriod = ld.getLoanTenure();
+//		return 0;
 	}
 
 	@Override
 	public LoanDetails updateLoanDetails(LoanDetails ld) {
 		return loanDetailsRepo.save(ld);
 	}
-	
+
 	@Override
 	public LoanDetails getLoanDetailsByLoanId(int loanId) {
 		return loanDetailsRepo.findById(loanId)

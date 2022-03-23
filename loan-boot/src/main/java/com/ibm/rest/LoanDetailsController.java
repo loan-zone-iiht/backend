@@ -48,11 +48,8 @@ public class LoanDetailsController {
 //		System.err.println(sType);
 		if (reqPojo.getLoanId() != 0) {
 			return loanDetailsService.updateLoanStatusFromLoanId(reqPojo.getLoanId(), reqPojo.getStatus());
-		} else if (reqPojo.getCustId() != 0) {
-			return loanDetailsService.updateLoanStatusFromCustId(reqPojo.getCustId(), reqPojo.getStatus());
-		} else {
+		} else
 			return null;
-		}
 
 	}
 
@@ -64,9 +61,13 @@ public class LoanDetailsController {
 		return ld;
 	}
 
-	@GetMapping(path = "/get-outstanding-principal", produces = "application/json")
-	public double getOutstandingPrincipal(@RequestParam int loanId) {
-		return loanDetailsService.getOutstandingPrincipal(loanId);
+//	@GetMapping(path = "/get-outstanding-principal", produces = "application/json")
+//	public double getOutstandingPrincipal(@RequestParam int loanId) {
+//		return loanDetailsService.getOutstandingPrincipal(loanId);
+//	}
+	@GetMapping(path = "/get-payment-amount", produces = "application/json")
+	public double getPaymentAmount(@RequestParam int loanId) {
+		return loanDetailsService.getPaymentAmount(loanId);
 	}
 
 	// dev
@@ -74,7 +75,7 @@ public class LoanDetailsController {
 	public LoanDetails upadteLoanStatus(@RequestBody LoanDetails ld) {
 		return loanDetailsService.updateLoanDetails(ld);
 	}
-	
+
 	@GetMapping(path = "/get-loandetails/{loanId}", produces = "application/json")
 	public LoanDetails getLoanDetailsByLoanId(@PathVariable int loanId) {
 		return loanDetailsService.getLoanDetailsByLoanId(loanId);

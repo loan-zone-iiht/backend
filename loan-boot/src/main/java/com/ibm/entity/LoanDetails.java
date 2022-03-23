@@ -56,13 +56,17 @@ public class LoanDetails {
 	private LocalDate dateBegin;
 	@Column(name = "date_end")
 	private LocalDate dateEnd;
+	@Column(name = "payment_amount")
+	private double paymentAmount;
+	@Column(name = "no_of_payments")
+	private int noOfPayments;
 	@Column(name = "bank_to_cust_payout")
 	private boolean bankToCustPayout;
-	@Column(name = "outstanding_principal")
-	private double outstandingPrincipal;
 	@Enumerated(EnumType.STRING) // only can have 4 types of values
 	@Column(name = "loan_status", length = 25)
 	private StatusType loanStatus;
+//	@Column(name = "outstanding_principal")
+//	private double outstandingPrincipal;
 //	@OneToMany(mappedBy = "loanDetailsId") // can have multiple nextPayback
 //	private ArrayList<NextPayback> nextPaybacks = new ArrayList<NextPayback>();
 
@@ -82,7 +86,6 @@ public class LoanDetails {
 		this.dateBegin = dateBegin;
 		this.dateEnd = dateEnd;
 		this.bankToCustPayout = bankToCustPayout;
-		this.outstandingPrincipal = outstandingPrincipal;
 		this.loanStatus = loanStatus;
 	}
 
@@ -157,6 +160,24 @@ public class LoanDetails {
 	public void setDateEnd(LocalDate dateEnd) {
 		this.dateEnd = dateEnd;
 	}
+	
+	
+
+	public double getPaymentAmount() {
+		return paymentAmount;
+	}
+
+	public void setPaymentAmount(double paymentAmount) {
+		this.paymentAmount = paymentAmount;
+	}
+
+	public int getNoOfPayments() {
+		return noOfPayments;
+	}
+
+	public void setNoOfPayments(int noOfPayments) {
+		this.noOfPayments = noOfPayments;
+	}
 
 	public boolean isBankToCustPayout() {
 		return bankToCustPayout;
@@ -166,13 +187,7 @@ public class LoanDetails {
 		this.bankToCustPayout = bankToCustPayout;
 	}
 
-	public double getOutstandingPrincipal() {
-		return outstandingPrincipal;
-	}
 
-	public void setOutstandingPrincipal(double outstandingPrincipal) {
-		this.outstandingPrincipal = outstandingPrincipal;
-	}
 
 	public StatusType getLoanStatus() {
 		return loanStatus;

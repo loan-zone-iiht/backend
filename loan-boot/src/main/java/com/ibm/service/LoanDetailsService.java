@@ -12,12 +12,12 @@ public interface LoanDetailsService {
 	List<LoanDetails> getLoandetailsByStatus(StatusType status);
 	// middleware for admin needed
 	LoanDetails updateLoanStatusFromLoanId(int loanId, StatusType status) throws GlobalLoanException; 
-	// middleware for admin needed
-	LoanDetails updateLoanStatusFromCustId(int custId, StatusType status) throws GlobalLoanException; 
+//	// middleware for admin needed
+//	LoanDetails updateLoanStatusFromCustId(int custId, StatusType status) throws GlobalLoanException; 
 	LoanDetails updateBankToCustPayout(int loanId, boolean payout);
-	double getOutstandingPrincipal(int loanId);
-	void updateOutstandingPrincipal(int loanId, double op);
-	double paymentAmount(int loanId);
+//	double getOutstandingPrincipal(int loanId);
+//	void updateOutstandingPrincipal(int loanId, double op);
+	double getPaymentAmount(int loanId);
 	LoanDetails updateLoanDetails(LoanDetails ld)throws GlobalLoanException;; // for dev only
 	LoanDetails getLoanDetailsByLoanId(int loanId)throws GlobalLoanException;;// for dev only
 }
