@@ -18,7 +18,7 @@ import com.ibm.pojo.UpdateLoanDetailsByStatus;
 import com.ibm.service.LoanDetailsService;
 
 @RestController
-public class LoanDetailsClass {
+public class LoanDetailsController {
 	@Autowired
 	private LoanDetailsService loanDetailsService;
 
@@ -41,19 +41,44 @@ public class LoanDetailsClass {
 //	public List<LoanDetails> upadteLoanDetails(@RequestParam Map<String,String> reqParamMap) {
 //	reqParamMap.entrySet();
 	@PostMapping(path = "/update-loandetails-by-status", consumes = "application/json")
-	public LoanDetails upadteLoanDetails(@RequestBody UpdateLoanDetailsByStatus reqPojo) {
+	public LoanDetails upadteLoanStatus(@RequestBody UpdateLoanDetailsByStatus reqPojo) {
 //		System.err.println(status);
-		//creating enums
+		// creating enums
 //		StatusType sType = Enum.valueOf(StatusType.class, status);
 //		System.err.println(sType);
-		if(reqPojo.getLoanId() != 0) {
+		if (reqPojo.getLoanId() != 0) {
 			return loanDetailsService.updateLoanStatusFromLoanId(reqPojo.getLoanId(), reqPojo.getStatus());
-		}else if(reqPojo.getCustId() != 0) {			
-			return loanDetailsService.updateLoanStatusFromCustId(reqPojo.getCustId(), reqPojo.getStatus());
-		}else {
+		} else
 			return null;
-		}
-		
+
+	}
+
+	@PostMapping(path = "/update-bank-to-cust-payout", consumes = "application/json")
+	public LoanDetails updateBankToCustPayout(@RequestBody Map<String, String> reqBodyMap) {
+		int loanId = Integer.parseInt(reqBodyMap.get("loanId"));
+		boolean payout = Boolean.valueOf(reqBodyMap.get("payout"));
+		LoanDetails ld = loanDetailsService.updateBankToCustPayout(loanId, payout);
+		return ld;
+	}
+
+//	@GetMapping(path = "/get-outstanding-principal", produces = "application/json")
+//	public double getOutstandingPrincipal(@RequestParam int loanId) {
+//		return loanDetailsService.getOutstandingPrincipal(loanId);
+//	}
+	@GetMapping(path = "/get-payment-amount", produces = "application/json")
+	public double getPaymentAmount(@RequestParam int loanId) {
+		return loanDetailsService.getPaymentAmount(loanId);
+	}
+
+	// dev
+	@PostMapping(path = "/update-loandetails", consumes = "application/json")
+	public LoanDetails upadteLoanStatus(@RequestBody LoanDetails ld) {
+		return loanDetailsService.updateLoanDetails(ld);
+	}
+
+	@GetMapping(path = "/get-loandetails/{loanId}", produces = "application/json")
+	public LoanDetails getLoanDetailsByLoanId(@PathVariable int loanId) {
+		return loanDetailsService.getLoanDetailsByLoanId(loanId);
 	}
 
 }

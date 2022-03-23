@@ -5,7 +5,6 @@ import com.ibm.enums.StatusType;
 public class UpdateLoanDetailsByStatus {
 	private StatusType status;
 	int loanId;
-	int custId;
 	public StatusType getStatus() {
 		return status;
 	}
@@ -18,11 +17,6 @@ public class UpdateLoanDetailsByStatus {
 	public void setLoanId(int loanId) {
 		this.loanId = loanId;
 	}
-	public int getCustId() {
-		return custId;
-	}
-	public void setCustId(int custId) {
-		this.custId = custId;
-	}
+
 	
 }
