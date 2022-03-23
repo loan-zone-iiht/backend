@@ -17,6 +17,7 @@ public interface LoanDetailsService {
 	LoanDetails updateBankToCustPayout(int loanId, boolean payout);
 	double getOutstandingPrincipal(int loanId);
 	void updateOutstandingPrincipal(int loanId, double op);
+	double paymentAmount(int loanId);
 	LoanDetails updateLoanDetails(LoanDetails ld)throws GlobalLoanException;; // for dev only
 	LoanDetails getLoanDetailsByLoanId(int loanId)throws GlobalLoanException;;// for dev only
 }

@@ -21,13 +21,13 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 	@Autowired
 	private LoanDetailsRepository loanDetailsRepo;
 	@Autowired
-	private CustomerRepository customerRepo;
+	private CustomerService custService;
 	@Autowired
-	private ManagerRepository managerRepo;
+	private ManagerService managerService;
 
 	@Override
 	public LoanDetails createLoanDetails(LoanDetails ld, int custId) {
-		Customer cust = customerRepo.findById(custId).get();
+		Customer cust = custService.getCustomerById(custId);
 		StatusType statusRej = Enum.valueOf(StatusType.class, "REJECTED");
 		StatusType status2Comp = Enum.valueOf(StatusType.class, "COMPLETED");
 		if (cust.getLoanDetail() == null || cust.getLoanDetail().getLoanStatus() == statusRej
@@ -38,17 +38,18 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 			ld.setCustomer(cust);
 			ld.setApplicationDate(LocalDate.now());
 			ld.setLoanStatus(StatusType.PENDING);
+			ld.setOutstandingPrincipal(ld.getLoanPrincipal());
 
 			// setting loanDetail to the customer
 			cust.setLoanDetail(ld);
 
 			// setting (random)manager to loanDetails
-			Manager mgr = managerRepo.getRandomManager();
+			Manager mgr = managerService.getRandomManager();
 			ld.setManager(mgr);
 
 			// saving
 			loanDetailsRepo.save(ld); // save the new obj (loanDetails) before the customer
-			customerRepo.save(cust);
+			custService.updateCustomer(cust);
 			return ld;
 		} else {
 			throw new GlobalLoanException("409", "Customer already has an ongoing loan");
@@ -77,7 +78,7 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 
 	@Override
 	public LoanDetails updateLoanStatusFromCustId(int custId, StatusType status) {
-		Customer cust = customerRepo.findById(custId).get();
+		Customer cust = custService.getCustomerById(custId);
 		LoanDetails ld = cust.getLoanDetail();
 		ld.setLoanStatus(status);
 		loanDetailsRepo.save(ld);
@@ -103,6 +104,14 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 		LoanDetails ld = loanDetailsRepo.findById(loanId).get();
 		ld.setOutstandingPrincipal(op);
 		loanDetailsRepo.save(ld);
+	}
+
+	
+	
+	@Override
+	public double paymentAmount(int loanId) {
+		//logic for calculating the payment
+		return 0;
 	}
 
 	@Override

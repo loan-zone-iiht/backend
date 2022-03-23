@@ -37,7 +37,7 @@ public class PanController {
 		return panService.getPanByPanNo(panNo);
 	}
 	
-	@GetMapping(path = "/get-pans/", produces = "application/json")
+	@GetMapping(path = "/get-pans", produces = "application/json")
 	public List<Pan> getAllPans() {
 		return panService.getAllPans();
 	}

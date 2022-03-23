@@ -18,7 +18,7 @@ import com.ibm.pojo.UpdateLoanDetailsByStatus;
 import com.ibm.service.LoanDetailsService;
 
 @RestController
-public class LoanDetailsClass {
+public class LoanDetailsController {
 	@Autowired
 	private LoanDetailsService loanDetailsService;
 
@@ -64,6 +64,17 @@ public class LoanDetailsClass {
 		return ld;
 	}
 
+	@GetMapping(path = "/get-outstanding-principal", produces = "application/json")
+	public double getOutstandingPrincipal(@RequestParam int loanId) {
+		return loanDetailsService.getOutstandingPrincipal(loanId);
+	}
+
+	// dev
+	@PostMapping(path = "/update-loandetails", consumes = "application/json")
+	public LoanDetails upadteLoanStatus(@RequestBody LoanDetails ld) {
+		return loanDetailsService.updateLoanDetails(ld);
+	}
+	
 	@GetMapping(path = "/get-loandetails/{loanId}", produces = "application/json")
 	public LoanDetails getLoanDetailsByLoanId(@PathVariable int loanId) {
 		return loanDetailsService.getLoanDetailsByLoanId(loanId);

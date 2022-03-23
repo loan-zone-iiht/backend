@@ -27,8 +27,12 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
-	public Customer updateCustomer(Customer cust) throws GlobalLoanException {
-		return customerRepo.save(cust);
+	public Customer updateCustomer(Customer cust){
+		if(customerRepo.findById(cust.getId()).isPresent()) {
+			return customerRepo.save(cust);			
+		}else {
+			throw new GlobalLoanException("404", "No customer exsists with this id");
+		}
 	}
 
 	@Override

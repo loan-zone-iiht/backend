@@ -22,7 +22,6 @@ public class CustomerController {
 	@Autowired
 	private CustomerService customerService;
 
-
 	@PostMapping(path = "/create-customer", consumes = "application/json")
 	public Customer createCustomer(@RequestBody Customer cust, @RequestParam String panNo) {
 		return customerService.createCustomer(cust, panNo);
@@ -31,12 +30,7 @@ public class CustomerController {
 
 	@PostMapping(path = "/update-customer", consumes = "application/json")
 	public Customer updateCustomer(@RequestBody Customer cust) {
-		try {
-			return customerService.updateCustomer(cust);
-		} catch (GlobalLoanException e) {
-			e.printStackTrace();
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-		}
+		return customerService.updateCustomer(cust);
 
 	}
 
@@ -46,9 +40,10 @@ public class CustomerController {
 			return customerService.getCustomerById(id);
 		} catch (RuntimeException e) {
 			e.printStackTrace();
-			throw new RuntimeException(e.getMessage(),e);
+			throw new RuntimeException(e.getMessage(), e);
 		}
 	}
+
 	@GetMapping(path = "/get-customers", produces = "application/json")
 	public List<Customer> getAllCustomers() {
 		return customerService.getAllCustomers();
@@ -58,8 +53,8 @@ public class CustomerController {
 	public Customer getCustomersByPan(@RequestParam String panNo) {
 		try {
 			return customerService.getCustomerByPan(panNo);
-		} catch (GlobalLoanException e) {			
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND,e.getMessage(),e);
+		} catch (GlobalLoanException e) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
 		}
 	}
 
