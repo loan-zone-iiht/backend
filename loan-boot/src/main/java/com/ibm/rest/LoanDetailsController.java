@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ibm.entity.Customer;
 import com.ibm.entity.LoanDetails;
+import com.ibm.entity.PaymentHistory;
 import com.ibm.enums.StatusType;
+import com.ibm.pojo.PaymentTransaction;
 import com.ibm.pojo.UpdateLoanDetailsByStatus;
 import com.ibm.service.LoanDetailsService;
 
@@ -60,7 +62,12 @@ public class LoanDetailsController {
 		LoanDetails ld = loanDetailsService.updateBankToCustPayout(loanId, payout);
 		return ld;
 	}
-
+   
+	@PostMapping(path = "/pay-back", consumes = "application/json")
+	public PaymentHistory payBack(@RequestBody PaymentTransaction pt) {
+		return loanDetailsService.payBack(pt);
+	}
+	
 //	@GetMapping(path = "/get-outstanding-principal", produces = "application/json")
 //	public double getOutstandingPrincipal(@RequestParam int loanId) {
 //		return loanDetailsService.getOutstandingPrincipal(loanId);

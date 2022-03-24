@@ -20,7 +20,10 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.ibm.enums.StatusType;
 
@@ -40,6 +43,7 @@ public class LoanDetails {
 	@JoinColumn(name = "manager_id") // can be approved by multiple manager
 	private Manager manager;
 //	@JsonManagedReference
+	@JsonProperty(access = Access.WRITE_ONLY)
 	@OneToMany(mappedBy = "loanDetails") // can have multiple payment histories
 	private List<PaymentHistory> paymentHistories = new ArrayList<PaymentHistory>();
 	@Column(name = "loan_principal")

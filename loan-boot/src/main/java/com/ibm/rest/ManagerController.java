@@ -15,12 +15,12 @@ public class ManagerController {
 	private ManagerService mgrService;
 
 	@PostMapping(path = "/manager-signup", consumes = "application/json")
-	public Manager createLoandetail(@RequestBody Manager mgr) {
+	public Manager managerSignup(@RequestBody Manager mgr) {
 		return mgrService.createManager(mgr);
 	}
 
 	@PostMapping(path = "/manager-login", consumes = "application/json")
-	public Manager createLoandetail(@RequestBody LoginPOJO login) {
+	public Manager managerLogin(@RequestBody LoginPOJO login) {
 
 		return mgrService.loginManager(login.getEmail(), login.getPhone(), login.getPassword());
 	}

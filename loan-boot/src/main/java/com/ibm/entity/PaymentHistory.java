@@ -18,6 +18,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.ibm.enums.FromOptions;
 import com.ibm.enums.PaymentMethod;
 import com.ibm.enums.PaymentType;
+import com.ibm.enums.SuccessType;
 
 @Entity
 @Table(name = "loan_payment_history_boot")
@@ -47,6 +48,10 @@ public class PaymentHistory {
 	@Enumerated(EnumType.STRING) // only can have 3 types of values
 	@Column(name = "payment_type", length = 25)
 	private PaymentType paymentType;
+
+	@Enumerated(EnumType.STRING) // only can have 2 types of values
+	@Column(name = "success_type", length = 25)
+	private SuccessType successType;
 //	@OneToOne // can have one nextpayback association
 //	@JoinColumn(name = "next_payback_id")
 //	private NextPayback nextPaybackId;
@@ -127,6 +132,16 @@ public class PaymentHistory {
 
 	public void setPaymentType(PaymentType paymentType) {
 		this.paymentType = paymentType;
+	}
+	
+	
+	
+	public SuccessType getSuccessType() {
+		return successType;
+	}
+
+	public void setSuccessType(SuccessType successType) {
+		this.successType = successType;
 	}
 
 	@Override

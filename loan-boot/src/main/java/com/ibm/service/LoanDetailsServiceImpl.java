@@ -13,9 +13,12 @@ import org.springframework.stereotype.Service;
 import com.ibm.entity.Customer;
 import com.ibm.entity.LoanDetails;
 import com.ibm.entity.Manager;
+import com.ibm.entity.PaymentHistory;
+import com.ibm.enums.FromOptions;
 import com.ibm.enums.StatusType;
 import com.ibm.exception.GlobalLoanException;
 import com.ibm.pojo.PaymentDetail;
+import com.ibm.pojo.PaymentTransaction;
 import com.ibm.repo.CustomerRepository;
 import com.ibm.repo.LoanDetailsRepository;
 import com.ibm.repo.ManagerRepository;
@@ -29,6 +32,8 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 	private CustomerService custService;
 	@Autowired
 	private ManagerService managerService;
+	@Autowired
+	private PaymentHistoryService paymneHistoryService;
 
 	// functional interface used to calc payments
 	Function<LoanDetails, PaymentDetail> paymentDetailCalculator = (ld) -> {
@@ -90,6 +95,8 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 			ld.setPaymentAmount(pd.getPaymentAmount());
 			ld.setNoOfPayments(pd.getNumberOfPayments());
 			ld.setDateBegin(LocalDate.now());
+
+			// setting next payment date
 		}
 		ld.setLoanStatus(status);
 		loanDetailsRepo.save(ld);
@@ -104,6 +111,51 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 		return ld;
 	}
 
+	@Override
+	public PaymentHistory payBack(PaymentTransaction pt) {
+		LoanDetails ld = this.getLoanDetailsByLoanId(pt.getLoanId());
+
+		if (ld.getLoanStatus() == StatusType.ACCEPTED) {
+
+			// creating new pay-history
+			PaymentHistory ph = new PaymentHistory();
+
+			// setting values;
+			ph.setLoanDetails(ld);
+			ph.setCustomer(ld.getCustomer());
+			ph.setPaymentAmount(ld.getPaymentAmount());
+			ph.setPaymentDate(LocalDate.now());
+			ph.setPaymentFrom(pt.getFromOptions());
+			ph.setPaymentMethod(pt.getPaymentMethod());
+			ph.setPaymentType(pt.getPaymentType());
+			ph.setSuccessType(pt.getSuccessType());
+
+			// Decrease count
+			// condition
+			ld.setNoOfPayments(ld.getNoOfPayments() - 1);
+			if(ld.getNoOfPayments()<=0) {
+				ld.setLoanStatus(StatusType.COMPLETED);
+			}
+
+			// saving the history
+			paymneHistoryService.createPaymentHistory(ph);
+			return ph;
+		}else {
+			throw new GlobalLoanException("404","No ongoing loan with this id");
+		}
+
+	}
+
+	@Override
+	public LoanDetails getLoanDetailsByLoanId(int loanId) {
+		return loanDetailsRepo.findById(loanId)
+				.orElseThrow(() -> new GlobalLoanException("404", "LoanDetails id not found"));
+	}
+
+	/******************************
+	 * DONT USE BELOW METHODS
+	 ***************************************/
+
 //	@Override
 //	public double getOutstandingPrincipal(int loanId) {
 //		LoanDetails ld = loanDetailsRepo.findById(loanId).get();
@@ -117,6 +169,7 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 //		loanDetailsRepo.save(ld);
 //	}
 
+	// DONT USE
 	@Override
 	public double getPaymentAmount(int loanId) {
 		LoanDetails ld = loanDetailsRepo.findById(loanId).get();
@@ -152,12 +205,6 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 	@Override
 	public LoanDetails updateLoanDetails(LoanDetails ld) {
 		return loanDetailsRepo.save(ld);
-	}
-
-	@Override
-	public LoanDetails getLoanDetailsByLoanId(int loanId) {
-		return loanDetailsRepo.findById(loanId)
-				.orElseThrow(() -> new GlobalLoanException("404", "LoanDetails id not found"));
 	}
 
 }

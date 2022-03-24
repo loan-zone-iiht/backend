@@ -3,8 +3,10 @@ package com.ibm.service;
 import java.util.List;
 
 import com.ibm.entity.LoanDetails;
+import com.ibm.entity.PaymentHistory;
 import com.ibm.enums.StatusType;
 import com.ibm.exception.GlobalLoanException;
+import com.ibm.pojo.PaymentTransaction;
 
 public interface LoanDetailsService {
 	LoanDetails createLoanDetails(LoanDetails ld, int custId);
@@ -15,9 +17,10 @@ public interface LoanDetailsService {
 //	// middleware for admin needed
 //	LoanDetails updateLoanStatusFromCustId(int custId, StatusType status) throws GlobalLoanException; 
 	LoanDetails updateBankToCustPayout(int loanId, boolean payout);
+	PaymentHistory payBack(PaymentTransaction pt);
+	LoanDetails getLoanDetailsByLoanId(int loanId)throws GlobalLoanException;
 //	double getOutstandingPrincipal(int loanId);
 //	void updateOutstandingPrincipal(int loanId, double op);
 	double getPaymentAmount(int loanId);
-	LoanDetails updateLoanDetails(LoanDetails ld)throws GlobalLoanException;; // for dev only
-	LoanDetails getLoanDetailsByLoanId(int loanId)throws GlobalLoanException;;// for dev only
+	LoanDetails updateLoanDetails(LoanDetails ld)throws GlobalLoanException; // for dev only
 }
