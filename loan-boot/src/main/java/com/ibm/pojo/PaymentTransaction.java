@@ -11,6 +11,7 @@ public class PaymentTransaction {
 	private PaymentMethod paymentMethod;
 	private PaymentType paymentType;
 	private SuccessType successType;
+	private int noOfPayments;
 	public int getLoanId() {
 		return loanId;
 	}
@@ -41,6 +42,14 @@ public class PaymentTransaction {
 	public void setSuccessType(SuccessType successType) {
 		this.successType = successType;
 	}
+	public int getNoOfPayments() {
+		return noOfPayments;
+	}
+	public void setNoOfPayments(int noOfPayment) {
+		this.noOfPayments = noOfPayment;
+	}
+	
+	
 
 	
 }

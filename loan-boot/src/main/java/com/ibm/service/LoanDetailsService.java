@@ -18,6 +18,9 @@ public interface LoanDetailsService {
 //	LoanDetails updateLoanStatusFromCustId(int custId, StatusType status) throws GlobalLoanException; 
 	LoanDetails updateBankToCustPayout(int loanId, boolean payout);
 	PaymentHistory payBack(PaymentTransaction pt);
+	PaymentHistory downpayment(PaymentTransaction pt);
+	LoanDetails applyForForeclosure(int loanId);
+	PaymentHistory foreclosurePayment(PaymentTransaction pt);
 	LoanDetails getLoanDetailsByLoanId(int loanId)throws GlobalLoanException;
 //	double getOutstandingPrincipal(int loanId);
 //	void updateOutstandingPrincipal(int loanId, double op);

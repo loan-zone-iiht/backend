@@ -15,6 +15,7 @@ import com.ibm.entity.LoanDetails;
 import com.ibm.entity.Manager;
 import com.ibm.entity.PaymentHistory;
 import com.ibm.enums.FromOptions;
+import com.ibm.enums.PaymentType;
 import com.ibm.enums.StatusType;
 import com.ibm.exception.GlobalLoanException;
 import com.ibm.pojo.PaymentDetail;
@@ -95,10 +96,25 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 			ld.setPaymentAmount(pd.getPaymentAmount());
 			ld.setNoOfPayments(pd.getNumberOfPayments());
 			ld.setDateBegin(LocalDate.now());
-
 			// setting next payment date
+			
+			/******************
+			 * Next payment date
+			 * *******************/
+		}else if(status == status.FORECLOSURE_ACCEPTED) {
+			ld.setPaymentAmount(ld.getPaymentAmount()*ld.getNoOfPayments());
+			ld.setNoOfPayments(1);
 		}
 		ld.setLoanStatus(status);
+		loanDetailsRepo.save(ld);
+		return ld;
+	}
+	
+	@Override
+	public LoanDetails applyForForeclosure(int loanId) {
+		LoanDetails ld = this.getLoanDetailsByLoanId(loanId);
+		ld.setPaymentAmount(ld.getNoOfPayments()*ld.getPaymentAmount());
+		ld.setLoanStatus(StatusType.FORECLOSURE_PENDING);
 		loanDetailsRepo.save(ld);
 		return ld;
 	}
@@ -114,7 +130,7 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 	@Override
 	public PaymentHistory payBack(PaymentTransaction pt) {
 		LoanDetails ld = this.getLoanDetailsByLoanId(pt.getLoanId());
-
+		double oldPaymentAmount = ld.getPaymentAmount();
 		if (ld.getLoanStatus() == StatusType.ACCEPTED) {
 
 			// creating new pay-history
@@ -123,27 +139,96 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 			// setting values;
 			ph.setLoanDetails(ld);
 			ph.setCustomer(ld.getCustomer());
-			ph.setPaymentAmount(ld.getPaymentAmount());
+			ph.setPaymentAmount(oldPaymentAmount);
 			ph.setPaymentDate(LocalDate.now());
 			ph.setPaymentFrom(pt.getFromOptions());
 			ph.setPaymentMethod(pt.getPaymentMethod());
-			ph.setPaymentType(pt.getPaymentType());
+			ph.setPaymentType(PaymentType.REGULAR);
 			ph.setSuccessType(pt.getSuccessType());
-
-			// Decrease count
-			// condition
+			// Decrease count by 1
 			ld.setNoOfPayments(ld.getNoOfPayments() - 1);
-			if(ld.getNoOfPayments()<=0) {
+
+			// condition for last payment
+			if (ld.getNoOfPayments() <= 0) {
 				ld.setLoanStatus(StatusType.COMPLETED);
+				ld.setPaymentAmount(0);
+				ld.setDateEnd(LocalDate.now());
 			}
 
 			// saving the history
 			paymneHistoryService.createPaymentHistory(ph);
 			return ph;
-		}else {
-			throw new GlobalLoanException("404","No ongoing loan with this id");
+		} else {
+			throw new GlobalLoanException("404", "No ongoing loan with this id");
 		}
 
+	}
+
+	@Override
+	public PaymentHistory downpayment(PaymentTransaction pt) {
+		LoanDetails ld = this.getLoanDetailsByLoanId(pt.getLoanId());
+		double oldPaymentAmount = ld.getPaymentAmount();
+		// no of payments needed should be more than 1 and less than total no of payments left
+		if (ld.getNoOfPayments() >= pt.getNoOfPayments() && pt.getNoOfPayments()>=1) {
+			ld.setNoOfPayments(ld.getNoOfPayments() - pt.getNoOfPayments()); // payments left
+
+			if (ld.getNoOfPayments() == 0) { // if last payment happens
+				ld.setLoanStatus(StatusType.COMPLETED);
+				ld.setPaymentAmount(0);
+				ld.setDateEnd(LocalDate.now());
+			}
+
+			// creating history
+			PaymentHistory ph = new PaymentHistory();
+
+			// setting values;
+			ph.setLoanDetails(ld);
+			ph.setCustomer(ld.getCustomer());
+			ph.setPaymentAmount(oldPaymentAmount * pt.getNoOfPayments()); // total amount
+			ph.setPaymentDate(LocalDate.now());
+			ph.setPaymentFrom(pt.getFromOptions());
+			ph.setPaymentMethod(pt.getPaymentMethod());
+			ph.setPaymentType(PaymentType.DOWNPAYMENT);
+			ph.setSuccessType(pt.getSuccessType());
+			// saving the history
+			paymneHistoryService.createPaymentHistory(ph);
+
+			return ph;
+		} else {
+			throw new GlobalLoanException("404", "send proper number of payments (more than 1 and less than total");
+		}
+	}
+	
+	@Override
+	public PaymentHistory foreclosurePayment(PaymentTransaction pt) {
+		LoanDetails ld = this.getLoanDetailsByLoanId(pt.getLoanId());
+		double oldPaymentAmount = ld.getPaymentAmount();
+			if(ld.getLoanStatus()==StatusType.FORECLOSURE_ACCEPTED) {
+				ld.setNoOfPayments(0);
+				ld.setDateEnd(LocalDate.now());
+				ld.setPaymentAmount(0);
+				ld.setLoanStatus(StatusType.COMPLETED);
+
+				// creating history
+				PaymentHistory ph = new PaymentHistory();
+
+				// setting values;
+				ph.setLoanDetails(ld);
+				ph.setCustomer(ld.getCustomer());
+				ph.setPaymentAmount(oldPaymentAmount);
+				ph.setPaymentDate(LocalDate.now());
+				ph.setPaymentFrom(pt.getFromOptions());
+				ph.setPaymentMethod(pt.getPaymentMethod());
+				ph.setPaymentType(PaymentType.FORECLOSURE);
+				ph.setSuccessType(pt.getSuccessType());
+				// saving the history
+				paymneHistoryService.createPaymentHistory(ph);
+
+				return ph;
+
+			}else {
+				throw new GlobalLoanException("404", "Not accepted for foreclosure");
+			}
 	}
 
 	@Override

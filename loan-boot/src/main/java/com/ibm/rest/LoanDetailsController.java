@@ -67,6 +67,14 @@ public class LoanDetailsController {
 	public PaymentHistory payBack(@RequestBody PaymentTransaction pt) {
 		return loanDetailsService.payBack(pt);
 	}
+	@PostMapping(path = "/downpayment", consumes = "application/json")
+	public PaymentHistory downpayment(@RequestBody PaymentTransaction pt) {
+		return loanDetailsService.downpayment(pt);
+	}
+	@PostMapping(path = "/foreclosure-payment", consumes = "application/json")
+	public PaymentHistory foreclosurePayment(@RequestBody PaymentTransaction pt) {
+		return loanDetailsService.foreclosurePayment(pt);
+	}
 	
 //	@GetMapping(path = "/get-outstanding-principal", produces = "application/json")
 //	public double getOutstandingPrincipal(@RequestParam int loanId) {
