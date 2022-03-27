@@ -34,19 +34,23 @@ public class CustomerServiceImpl implements CustomerService {
 			throw new GlobalLoanException("404", "No customer exsists with this id");
 		}
 	}
-
+	
+	// To get a customer by pan no
 	@Override
 	public Customer getCustomerByPan(String panNo) throws GlobalLoanException {
 		Pan p = panService.getPanByPanNo(panNo);
 		return customerRepo.findByPan(p);
 	}
-
+	
+	// To get a customer by their id
 	@Override
 	public Customer getCustomerById(int id) throws GlobalLoanException {
 		return customerRepo.findById(id)
 				.orElseThrow(() -> new GlobalLoanException("404","Customer id not found"));
 	}
-
+	
+	
+	// get all customers
 	@Override
 	public List<Customer> getAllCustomers() {
 		return customerRepo.findAll();

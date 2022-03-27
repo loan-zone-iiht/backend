@@ -39,7 +39,8 @@ public class PanServiceImpl implements PanService {
 		Customer cust = customerRepo.findById(custId).get();
 		return panRepo.findByCustomer(cust);
 	}
-
+	
+	// get cibil score of a customer
 	@Override
 	public int getCibilScore(int custId) throws GlobalLoanException{
 		Customer cust = customerRepo.findById(custId).get();

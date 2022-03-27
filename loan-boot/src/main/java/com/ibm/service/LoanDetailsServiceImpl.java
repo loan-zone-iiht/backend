@@ -86,7 +86,8 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 	public List<LoanDetails> getLoandetailsByStatus(StatusType status) {
 		return loanDetailsRepo.findAllByLoanStatus(status);
 	}
-
+	
+	// Update the status of the loans via the manager only
 	@Override
 	public LoanDetails updateLoanStatusFromLoanId(int loanId, StatusType status) {
 		LoanDetails ld = loanDetailsRepo.findById(loanId).get();
@@ -103,13 +104,14 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 			 * *******************/
 		}else if(status == status.FORECLOSURE_ACCEPTED) {
 			ld.setPaymentAmount(ld.getPaymentAmount()*ld.getNoOfPayments());
-			ld.setNoOfPayments(1);
+			ld.setNoOfPayments(1); // forecloure means customer pays out all remaining loans at once
 		}
 		ld.setLoanStatus(status);
 		loanDetailsRepo.save(ld);
 		return ld;
 	}
 	
+	// apply for foreclosure via customer
 	@Override
 	public LoanDetails applyForForeclosure(int loanId) {
 		LoanDetails ld = this.getLoanDetailsByLoanId(loanId);
@@ -119,6 +121,7 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 		return ld;
 	}
 
+	// specify if bank has given money to customer or not
 	@Override
 	public LoanDetails updateBankToCustPayout(int loanId, boolean payout) {
 		LoanDetails ld = loanDetailsRepo.findById(loanId).get();
@@ -127,6 +130,7 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 		return ld;
 	}
 
+	// pay the monthly/quaterly/yearly or any amount for the customer
 	@Override
 	public PaymentHistory payBack(PaymentTransaction pt) {
 		LoanDetails ld = this.getLoanDetailsByLoanId(pt.getLoanId());
@@ -164,6 +168,8 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 
 	}
 
+	
+	// give advance downpayment of the loan payback via the customer
 	@Override
 	public PaymentHistory downpayment(PaymentTransaction pt) {
 		LoanDetails ld = this.getLoanDetailsByLoanId(pt.getLoanId());
@@ -199,6 +205,8 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 		}
 	}
 	
+	
+	// provide the foreclosure payment
 	@Override
 	public PaymentHistory foreclosurePayment(PaymentTransaction pt) {
 		LoanDetails ld = this.getLoanDetailsByLoanId(pt.getLoanId());
@@ -231,6 +239,7 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 			}
 	}
 
+	// get loan details by it's id
 	@Override
 	public LoanDetails getLoanDetailsByLoanId(int loanId) {
 		return loanDetailsRepo.findById(loanId)
@@ -253,7 +262,9 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 //		ld.setOutstandingPrincipal(op);
 //		loanDetailsRepo.save(ld);
 //	}
-
+	
+	
+	// use updateLoanStatusFromLoanId for this
 	// DONT USE
 	@Override
 	public double getPaymentAmount(int loanId) {

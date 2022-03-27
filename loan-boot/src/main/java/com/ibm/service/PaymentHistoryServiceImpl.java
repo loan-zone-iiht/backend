@@ -25,12 +25,13 @@ public class PaymentHistoryServiceImpl implements PaymentHistoryService {
 		return paymentHistoryRepo.findById(phId)
 				.orElseThrow(() -> (new GlobalLoanException("404", "No paymentHistory with this id")));
 	}
-
+	
 	@Override
 	public List<PaymentHistory> findAllByCustomerId(int custId) {
 		return paymentHistoryRepo.findAllByCustomerId(custId);
 	}
-
+	
+	// get all the payment history of all customer
 	@Override
 	public List<PaymentHistory> findAllByLoanDetailsLoanId(int loanId) {
 		return paymentHistoryRepo.findAllByLoanDetailsLoanId(loanId);

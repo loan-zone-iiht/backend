@@ -17,7 +17,8 @@ public class ManagerServiceImpl implements ManagerService {
 	public Manager createManager(Manager mgr) throws GlobalLoanException{
 		return managerRepo.save(mgr);
 	}
-
+	
+	// auth for manager
 	@Override
 	public Manager loginManager(String email, String phone, String password) throws GlobalLoanException {
 		Manager mgr = managerRepo.loginManager(email, phone);
@@ -30,7 +31,9 @@ public class ManagerServiceImpl implements ManagerService {
 			throw new GlobalLoanException("403", "Wrong password");
 		}
 	}
-
+	
+	
+	// get random manager to assign to a loan
 	@Override
 	public Manager getRandomManager() {
 		return managerRepo.getRandomManager();
