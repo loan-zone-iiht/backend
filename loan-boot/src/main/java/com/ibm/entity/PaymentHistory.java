@@ -11,25 +11,18 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
-enum FromOptions {
-	BANK, CUSTOMER;
-}
-
-enum PaymentMethod {
-	UPI, CREDIT_CARD, DEBIT_CARD, BANK_TRANSFER;
-}
-
-enum PaymentType {
-	REGULAR, DOWNPAYMENT, FORECLOSURE;
-}
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.ibm.enums.FromOptions;
+import com.ibm.enums.PaymentMethod;
+import com.ibm.enums.PaymentType;
+import com.ibm.enums.SuccessType;
 
 @Entity
 @Table(name = "loan_payment_history_boot")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id") // json infy
 public class PaymentHistory {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,10 +44,14 @@ public class PaymentHistory {
 	private FromOptions paymentFrom;
 	@Enumerated(EnumType.STRING) // only can have 4 types of values
 	@Column(name = "payment_method", length = 25)
-	private FromOptions paymentMethod;
+	private PaymentMethod paymentMethod;
 	@Enumerated(EnumType.STRING) // only can have 3 types of values
 	@Column(name = "payment_type", length = 25)
-	private FromOptions paymentType;
+	private PaymentType paymentType;
+
+	@Enumerated(EnumType.STRING) // only can have 2 types of values
+	@Column(name = "success_type", length = 25)
+	private SuccessType successType;
 //	@OneToOne // can have one nextpayback association
 //	@JoinColumn(name = "next_payback_id")
 //	private NextPayback nextPaybackId;
@@ -62,8 +59,8 @@ public class PaymentHistory {
 	public PaymentHistory() {
 	}
 
-	public PaymentHistory(Customer customer, LoanDetails loanDetails, double paymentAmount,
-			LocalDate paymentDate, FromOptions paymentFrom, FromOptions paymentMethod, FromOptions paymentType) {
+	public PaymentHistory(Customer customer, LoanDetails loanDetails, double paymentAmount, LocalDate paymentDate,
+			FromOptions paymentFrom, PaymentMethod paymentMethod, PaymentType paymentType) {
 		this.customer = customer;
 		this.loanDetails = loanDetails;
 		this.paymentAmount = paymentAmount;
@@ -121,20 +118,30 @@ public class PaymentHistory {
 		this.paymentFrom = paymentFrom;
 	}
 
-	public FromOptions getPaymentMethod() {
+	public PaymentMethod getPaymentMethod() {
 		return paymentMethod;
 	}
 
-	public void setPaymentMethod(FromOptions paymentMethod) {
+	public void setPaymentMethod(PaymentMethod paymentMethod) {
 		this.paymentMethod = paymentMethod;
 	}
 
-	public FromOptions getPaymentType() {
+	public PaymentType getPaymentType() {
 		return paymentType;
 	}
 
-	public void setPaymentType(FromOptions paymentType) {
+	public void setPaymentType(PaymentType paymentType) {
 		this.paymentType = paymentType;
+	}
+	
+	
+	
+	public SuccessType getSuccessType() {
+		return successType;
+	}
+
+	public void setSuccessType(SuccessType successType) {
+		this.successType = successType;
 	}
 
 	@Override

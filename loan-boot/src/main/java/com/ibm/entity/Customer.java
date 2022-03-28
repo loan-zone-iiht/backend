@@ -13,14 +13,10 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 //@JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
@@ -42,7 +38,7 @@ public class Customer {
 	private List<PaymentHistory> paymentHistories = new ArrayList<PaymentHistory>();
 	@Column(length = 25)
 	private String name;
-	@Column(length = 25)
+	@Column(unique = true, length = 25)
 	private String email;
 	@JsonProperty(access = Access.WRITE_ONLY)
 	@Column(length = 50)

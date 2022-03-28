@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ibm.entity.Customer;
 import com.ibm.entity.Pan;
 import com.ibm.service.PanService;
 
@@ -38,7 +37,7 @@ public class PanController {
 		return panService.getPanByPanNo(panNo);
 	}
 	
-	@GetMapping(path = "/get-pans/", produces = "application/json")
+	@GetMapping(path = "/get-pans", produces = "application/json")
 	public List<Pan> getAllPans() {
 		return panService.getAllPans();
 	}
