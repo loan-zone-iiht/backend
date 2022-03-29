@@ -4,6 +4,8 @@ public class LoginPOJO {
 	private String email;
 	private String phone;
 	private String password;
+	private int otp;
+	private int id;
 	public String getEmail() {
 		return email;
 	}
@@ -22,6 +24,20 @@ public class LoginPOJO {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+	public int getOtp() {
+		return otp;
+	}
+	public void setOtp(int otp) {
+		this.otp = otp;
+	}
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	
+	
 	
 	
 }
