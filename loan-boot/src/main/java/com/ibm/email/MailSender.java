@@ -12,7 +12,8 @@ import com.amazonaws.services.simpleemail.model.SendEmailRequest;
 
 @Component
 public class MailSender {
-	@Autowired
+	
+	@Autowired(required = false)
 	public AmazonSimpleEmailService amazonSimpleEmailService;
 
 	private String emailContent;
