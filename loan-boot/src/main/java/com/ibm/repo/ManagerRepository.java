@@ -10,4 +10,5 @@ public interface ManagerRepository extends JpaRepository<Manager, Integer> {
 	Manager getRandomManager();
 	@Query("FROM Manager m Where m.email=?1 OR m.phone=?2")
 	Manager loginManager(String email, String phone);
+	Manager findByEmailOrPhone(String email, String phone);
 }

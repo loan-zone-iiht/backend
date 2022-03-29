@@ -30,11 +30,12 @@ public class Manager {
 	private String name;
 	@Column(unique = true, length = 25)
 	private String email;
-	@Column(length = 15)
+	@Column(unique = true, length = 15)
 	private String phone;
 	@Column(length = 50)
 	@JsonProperty(access = Access.WRITE_ONLY)
 	private String password;
+	private Integer otp;
 
 	public Manager() {
 	}
@@ -91,6 +92,16 @@ public class Manager {
 
 	public void setLoanDetails(List<LoanDetails> loanDetails) {
 		this.loanDetails = loanDetails;
+	}
+	
+	
+
+	public Integer getOtp() {
+		return otp;
+	}
+
+	public void setOtp(Integer otp) {
+		this.otp = otp;
 	}
 
 	@Override
