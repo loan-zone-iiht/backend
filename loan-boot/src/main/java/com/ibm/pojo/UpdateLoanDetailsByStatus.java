@@ -5,7 +5,7 @@ import com.ibm.enums.StatusType;
 /**
  * Class {UpdateLoanDetailsByStatus} is a simple POJO
  * to handle the incoming request object 
- * to update the current status of loans
+ * to update the current status of loans.
  * 
  * 
  * @author Saswata Dutta
