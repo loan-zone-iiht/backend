@@ -8,6 +8,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+/**
+ * Class {GlobalExceptionAdvice} is the advice class of
+ * exceptions for all the spring-boot controllers
+ * 
+ * @author Saswata Dutta
+ */
+
 @ControllerAdvice
 public class GlobalExceptionAdvice {
 	@ExceptionHandler(GlobalLoanException.class)

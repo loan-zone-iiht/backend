@@ -11,6 +11,15 @@ import com.ibm.entity.Manager;
 import com.ibm.exception.GlobalLoanException;
 import com.ibm.repo.ManagerRepository;
 
+
+/**
+ * Class {ManagerServiceImpl} is a service class extending {ManagerService}
+ * for manager entity, which uses the methods from
+ * manager repository.
+ * 
+ * @author Saswata Dutta
+ */
+
 @Service
 public class ManagerServiceImpl implements ManagerService {
 

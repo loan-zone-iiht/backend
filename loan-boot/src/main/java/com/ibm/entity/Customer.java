@@ -18,22 +18,33 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
-//@JsonIgnoreProperties(ignoreUnknown = true)
+
+/**
+ * Class {Customer} is the entity defining the
+ * fields of the customer table in DB.
+ * 
+ * @JsonIdentityInfo handles JSON references,
+ * and stops them becoming infinitely nested objects.
+ * No need for JsonBackReference and JsonManagedReference anymore.
+ * 
+ * 
+ * @author Saswata Dutta
+ */
+
+
 @Entity
 @Table(name = "loan_customers_boot")
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id") // json infy
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Customer {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-//	@JsonIgnore
 	@OneToOne // can have one pan no
 	@JoinColumn(name = "pan_no")
 	private Pan pan;
 	@OneToOne // can have one loan details at a time
 	@JoinColumn(name = "loan_detail_id")
 	private LoanDetails loanDetail;
-//	@JsonManagedReference
 	@OneToMany(mappedBy = "customer") // can have multiple payment histories
 	private List<PaymentHistory> paymentHistories = new ArrayList<PaymentHistory>();
 	@Column(length = 25)

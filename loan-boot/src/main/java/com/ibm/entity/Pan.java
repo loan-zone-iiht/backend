@@ -10,7 +10,17 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
-//@JsonIgnoreProperties(ignoreUnknown = true)
+/**
+ * Class {Pan} is the entity defining the
+ * fields of the pan table in DB.
+ * 
+ * @JsonIdentityInfo handles JSON references,
+ * and stops them becoming infinitely nested objects.
+ * No need for JsonBackReference and JsonManagedReference anymore.
+ * 
+ * @author Saswata Dutta
+ */
+
 @Entity
 @Table(name = "loan_pan_boot")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "panNo") // json infy
