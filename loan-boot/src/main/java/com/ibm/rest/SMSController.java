@@ -15,7 +15,7 @@ public class SMSController {
 		try {
 			System.out.println(sms.getPhoneNo());
 		}catch(Exception e) {
-			System.out.println("sdsd");
+			
 			e.printStackTrace();
 		}
 		
