@@ -1,6 +1,7 @@
 package com.ibm.email;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
@@ -23,16 +24,19 @@ public class MailSender {
 	
 	@Autowired(required = false)
 	public AmazonSimpleEmailService amazonSimpleEmailService;
-
-	private String emailContent;
+	
+	@Value("${mail.sender}")
 	private String senderEmail;
+	
+	
+	private String emailContent;
 	private String receiverEmail;
 	private String emailSubject;
 
 	public MailSender() {
 		this.emailContent = this.getContentSD("Default email");
 
-		this.senderEmail = "sayak.94.sm@gmail.com";
+//		this.senderEmail = "sayak.94.sm@gmail.com";
 		this.receiverEmail = "sayak.94.sm@gmail.com";
 		this.emailSubject = "Loan zone updates";
 	}
