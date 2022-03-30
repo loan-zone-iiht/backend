@@ -1,6 +1,8 @@
 package com.ibm.service;
 
+import java.text.ParseException;
 import java.util.Random;
+
 import java.util.function.Supplier;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +11,11 @@ import org.springframework.stereotype.Service;
 import com.ibm.email.MailSender;
 import com.ibm.entity.Manager;
 import com.ibm.exception.GlobalLoanException;
+import com.ibm.message.MessageSender;
 import com.ibm.repo.ManagerRepository;
+
+import com.ibm.pojo.SMS;
+
 
 @Service
 public class ManagerServiceImpl implements ManagerService {
@@ -18,6 +24,9 @@ public class ManagerServiceImpl implements ManagerService {
 	private ManagerRepository managerRepo;
 	@Autowired
 	private MailSender mailSender;
+	
+	@Autowired
+     private MessageSender msender;
 
 	Supplier<Integer> generateOtp = () -> {
 		Random rnd = new Random();
@@ -61,6 +70,7 @@ public class ManagerServiceImpl implements ManagerService {
 		Manager mgr = managerRepo.findByEmailOrPhone(email, phone);
 		// generating otp
 		int generatedOtp = generateOtp.get();
+		System.err.println(generatedOtp);
 		mgr.setOtp(generatedOtp);
 		managerRepo.save(mgr);
 
@@ -69,7 +79,12 @@ public class ManagerServiceImpl implements ManagerService {
 		mailSender.setReceiverEmail(mgr.getEmail());
 		mailSender.setEmailContent("Manager OTP: " + generatedOtp);
 		mailSender.sendEmail();
-
+		
+		
+		msender.send(mgr.getPhone(),generatedOtp);
+		
+		
+		
 		return mgr;
 	}
 
