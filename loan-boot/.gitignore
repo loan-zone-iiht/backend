@@ -33,4 +33,4 @@ build/
 .vscode/
 
 ### Application ###
-AwsConfig.java
+application.properties
