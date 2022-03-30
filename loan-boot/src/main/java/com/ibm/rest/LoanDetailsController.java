@@ -19,6 +19,15 @@ import com.ibm.pojo.PaymentTransaction;
 import com.ibm.pojo.UpdateLoanDetailsByStatus;
 import com.ibm.service.LoanDetailsService;
 
+
+/**
+ * Class {LoanDetailsController} is the controller class.
+ * Mainly having the routes related to loan details entity.
+ * Mainly uses LoanDetailsService methods.
+ * 
+ * @author Saswata Dutta
+ */
+
 @RestController
 public class LoanDetailsController {
 	@Autowired

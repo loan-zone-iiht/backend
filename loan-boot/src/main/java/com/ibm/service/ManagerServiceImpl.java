@@ -14,7 +14,16 @@ import com.ibm.exception.GlobalLoanException;
 import com.ibm.message.MessageSender;
 import com.ibm.repo.ManagerRepository;
 
-import com.ibm.pojo.SMS;
+
+
+/**
+ * Class {ManagerServiceImpl} is a service class extending {ManagerService}
+ * for manager entity, which uses the methods from
+ * manager repository.
+ * 
+ * @author Saswata Dutta
+ * @author Sayak Mukherjee
+ */
 
 
 @Service

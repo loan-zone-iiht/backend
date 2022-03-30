@@ -9,6 +9,15 @@ import com.ibm.entity.Manager;
 import com.ibm.pojo.LoginPOJO;
 import com.ibm.service.ManagerService;
 
+
+/**
+ * Class {ManagerController} is the controller class.
+ * Mainly having the routes related to manager entity.
+ * Mainly uses ManagerService methods.
+ * 
+ * @author Saswata Dutta
+ */
+
 @RestController
 public class ManagerController {
 	@Autowired

@@ -1,5 +1,14 @@
 package com.ibm.pojo;
 
+
+/**
+ * Class {LoginPOJO} is a simple POJO
+ * to handle the incoming request object from 
+ * login controllers.
+ * 
+ * @author Saswata Dutta
+ */
+
 public class LoginPOJO {
 	private String email;
 	private String phone;

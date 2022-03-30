@@ -17,6 +17,15 @@ import com.ibm.entity.Customer;
 import com.ibm.exception.GlobalLoanException;
 import com.ibm.service.CustomerService;
 
+
+/**
+ * Class {CustomerController} is the controller class.
+ * Mainly having the routes related to customer entity.
+ * Mainly uses CustomerService methods.
+ * 
+ * @author Saswata Dutta
+ */
+
 @RestController
 public class CustomerController {
 	@Autowired

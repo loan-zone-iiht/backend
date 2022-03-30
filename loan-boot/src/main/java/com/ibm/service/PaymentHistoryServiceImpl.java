@@ -9,6 +9,15 @@ import com.ibm.entity.PaymentHistory;
 import com.ibm.exception.GlobalLoanException;
 import com.ibm.repo.PaymentHistoryRepository;
 
+
+/**
+ * Class {PaymentHistoryServiceImpl} is a service class extending {PaymentHistoryService}
+ * for payment history entity, which uses the methods from
+ * payment history repository.
+ * 
+ * @author Saswata Dutta
+ */
+
 @Service
 public class PaymentHistoryServiceImpl implements PaymentHistoryService {
 

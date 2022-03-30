@@ -10,6 +10,14 @@ import com.ibm.entity.Pan;
 import com.ibm.exception.GlobalLoanException;
 import com.ibm.repo.CustomerRepository;
 
+/**
+ * Class {CustomerServiceImpl} is a service class extending {CustomerService}
+ * for customer entity, which uses the methods from
+ * customer repository.
+ * 
+ * @author Saswata Dutta
+ */
+
 @Service
 public class CustomerServiceImpl implements CustomerService {
 
@@ -17,6 +25,7 @@ public class CustomerServiceImpl implements CustomerService {
 	private CustomerRepository customerRepo;
 	@Autowired
 	private PanService panService;
+
 
 	@Override
 	public Customer createCustomer(Customer cust, String panNo) {
