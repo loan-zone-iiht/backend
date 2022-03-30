@@ -7,6 +7,9 @@ import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 @Configuration
 @EnableWebSocketMessageBroker
+
+//help to send OTP from one system to another
+//through Web Sockets
 public class WebSocketConfig  implements WebSocketMessageBrokerConfigurer{
 
 	

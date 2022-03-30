@@ -15,11 +15,11 @@ import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
 @Component
 public class SMSService {
-     private final String ACCOUNT_SID ="AC1272336dfaf920cf19319a0b06280b7f";
+     private final String ACCOUNT_SID ="ACf53066d73bbd78a7372d9644c98c3a21";
 
-    private final String AUTH_TOKEN = "043f16a4bb78aae55f3b1e424d03d651";
+    private final String AUTH_TOKEN = "a605cd7cb05801fb4f84c3bb2226f5a3";
 
-    private final String FROM_NUMBER = "+14043417638";
+    private final String FROM_NUMBER = "+14432321808";
 
     public void send(SMS sms) throws ParseException {
     	Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
@@ -30,7 +30,7 @@ public class SMSService {
         int number=(int)(Math.random()*(max-min+1)+min);
       
         
-        String msg ="Your OTP - "+number+ " please verify this OTP in your Application by Er Prince kumar Technoidentity.com";
+        String msg ="Your OTP - "+number+ " Please verify this OTP in your Application by Loan-Zone";
        
         
         Message message = Message.creator(new PhoneNumber(sms.getPhoneNo()), new PhoneNumber(FROM_NUMBER), msg)
