@@ -10,6 +10,14 @@ import com.amazonaws.services.simpleemail.model.Destination;
 import com.amazonaws.services.simpleemail.model.Message;
 import com.amazonaws.services.simpleemail.model.SendEmailRequest;
 
+/**
+ * Class {MailSender} is to send emails with customized body and headers,
+ * to desired recipient.
+ * 
+ * @see {AwsConfig}
+ * @author Saswata Dutta
+ */
+
 @Component
 public class MailSender {
 	
@@ -35,7 +43,8 @@ public class MailSender {
 		this.receiverEmail = receiverEmail;
 		this.emailSubject = emailSubject;
 	}
-
+	
+	/** Method to send mail */
 	public void sendEmail() {
 
 		try {
@@ -87,7 +96,8 @@ public class MailSender {
 	public void setEmailSubject(String emailSubject) {
 		this.emailSubject = emailSubject;
 	}
-
+	
+	/** Custom template created for email */
 	private String getContentSD(String message) {
 		String content = "<!DOCTYPE html>\n" + "\n"
 				+ "<html lang=\"en\" xmlns:o=\"urn:schemas-microsoft-com:office:office\" xmlns:v=\"urn:schemas-microsoft-com:vml\">\n"

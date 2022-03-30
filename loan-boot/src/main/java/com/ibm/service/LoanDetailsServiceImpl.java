@@ -24,6 +24,15 @@ import com.ibm.repo.CustomerRepository;
 import com.ibm.repo.LoanDetailsRepository;
 import com.ibm.repo.ManagerRepository;
 
+
+/**
+ * Class {LoanDetailsServiceImpl} is a service class extending {LoanDetailsService}
+ * for loan details entity, which uses the methods from
+ * loan details repository.
+ * 
+ * @author Saswata Dutta
+ */
+
 @Service
 public class LoanDetailsServiceImpl implements LoanDetailsService {
 

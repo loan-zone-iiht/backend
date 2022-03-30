@@ -27,6 +27,20 @@ import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.ibm.enums.StatusType;
 
+/**
+ * Class {LoanDetails} is the entity defining the
+ * fields of all the required details 
+ * regarding a loan in the DB table.
+ * 
+ * @JsonIdentityInfo handles JSON references,
+ * and stops them becoming infinitely nested objects.
+ * No need for JsonBackReference and JsonManagedReference anymore.
+ * 
+ * @author Saswata Dutta
+ */
+
+
+
 
 @Entity
 @Table(name = "loan_loan_details_boot")
