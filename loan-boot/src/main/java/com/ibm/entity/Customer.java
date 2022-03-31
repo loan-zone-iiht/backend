@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -16,6 +18,7 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import com.ibm.enums.RoleOptions;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 
@@ -57,6 +60,9 @@ public class Customer {
 	@Column(length = 15)
 	private String phone;
 	private double salary;
+	@Enumerated(EnumType.STRING) // only can have 2 types of values
+	@Column(length = 12)
+	private RoleOptions role;
 //	@Column(name = "acc_no", length = 25)
 //	private String accountNo;	
 //	@OneToMany(mappedBy = "custId") // can have multiple nextPayback
@@ -148,6 +154,16 @@ public class Customer {
 		this.password = password;
 	}
 	
+	
+	
+	public RoleOptions getRole() {
+		return role;
+	}
+
+	public void setRole(RoleOptions role) {
+		this.role = role;
+	}
+
 	@Override
 	public String toString() {
 		return "Customer [id=" + id + ", panNo=" + pan + ", name=" + name + ", email=" + email + ", phone=" + phone

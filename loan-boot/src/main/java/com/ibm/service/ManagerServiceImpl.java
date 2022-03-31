@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.ibm.email.MailSender;
 import com.ibm.entity.Manager;
+import com.ibm.enums.RoleOptions;
 import com.ibm.exception.GlobalLoanException;
 import com.ibm.repo.ManagerRepository;
 
@@ -37,9 +38,13 @@ public class ManagerServiceImpl implements ManagerService {
 
 	@Override
 	public Manager createManager(Manager mgr) throws GlobalLoanException {
+		mgr.setRole(RoleOptions.MANAGER);// setting the role
 		return managerRepo.save(mgr);
 	}
 
+	/**
+	 * @author Saswata Dutta
+	 * */
 	// auth for manager
 	@Override
 	public Manager loginManager(String email, String phone, String password, int otp) throws GlobalLoanException {
@@ -47,9 +52,12 @@ public class ManagerServiceImpl implements ManagerService {
 		System.err.println(mgr);
 		if (mgr == null) {
 			throw new GlobalLoanException("404", "No manager with this credential");
-		} else if (mgr.getPassword().equals(password)) {
+		// to make sure the password is passed as a param
+		} else if (password!=null && mgr.getPassword().equals(password)) {
 			return mgr;
-		} else if(this.verifyOtp(mgr, otp)){
+		// to make sure if password is wrong but provided, the below condition should
+		// not enter. And also mgr.getOtp() is not null and otp(primitive int) is not 0(default)
+		} else if(mgr.getOtp()!=null && otp!=0 && this.verifyOtp(mgr, otp)){
 			// verify otp
 			return mgr;
 		}else {	

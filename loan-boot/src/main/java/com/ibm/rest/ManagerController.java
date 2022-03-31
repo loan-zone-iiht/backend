@@ -9,11 +9,13 @@ import com.ibm.entity.Manager;
 import com.ibm.pojo.LoginPOJO;
 import com.ibm.service.ManagerService;
 
-
 /**
- * Class {ManagerController} is the controller class.
- * Mainly having the routes related to manager entity.
- * Mainly uses ManagerService methods.
+ * Class {ManagerController} is the controller class. Mainly having the routes
+ * related to manager entity. Mainly uses ManagerService methods.
+ * 
+ * Controller paths starting with /manager/ or /manager- needs a header role and
+ * it should be MANAGER which is a enum of type RoleOptions. 
+ * [Excluding /manager-signup, /manager-login, /manager-send-otp]
  * 
  * @author Saswata Dutta
  */
@@ -39,7 +41,7 @@ public class ManagerController {
 
 		return mgrService.sendOtp(login.getEmail(), login.getPhone());
 	}
-	
+
 	// made for solely otp verify
 //	@PostMapping(path = "/manager-verify-otp", consumes = "application/json")
 //	public Manager managerVerifyOtp(@RequestBody LoginPOJO login) {

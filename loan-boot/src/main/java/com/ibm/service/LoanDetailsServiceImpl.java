@@ -184,7 +184,7 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 		// sending mail confirming that bank paid the customer
 		String mailContent = "We've delivered the total amount of Rs " + ld.getLoanPrincipal()
 				+ " to your bank account. In case you didn't recived it, please mail us at "
-				+ ld.getManager().getEmail() + ".";
+				+ ld.getCustomer().getEmail() + ".";
 
 		mailSender.setEmailSubject("Congratulations, we've deliverd the Rs " + ld.getLoanPrincipal() + " to you.");
 		mailSender.setReceiverEmail(ld.getCustomer().getEmail());

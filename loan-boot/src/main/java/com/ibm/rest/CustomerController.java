@@ -23,6 +23,10 @@ import com.ibm.service.CustomerService;
  * Mainly having the routes related to customer entity.
  * Mainly uses CustomerService methods.
  * 
+ * Controller paths starting with /manager/ or /manager-
+ * needs a header role and it should be MANAGER which is
+ * a enum of type RoleOptions.
+ * 
  * @author Saswata Dutta
  */
 
@@ -53,12 +57,12 @@ public class CustomerController {
 		}
 	}
 
-	@GetMapping(path = "/get-customers", produces = "application/json")
+	@GetMapping(path = "/manager/get-customers", produces = "application/json")
 	public List<Customer> getAllCustomers() {
 		return customerService.getAllCustomers();
 	}
 
-	@GetMapping(path = "/get-customer-by-pan", produces = "application/json")
+	@GetMapping(path = "/manager/get-customer-by-pan", produces = "application/json")
 	public Customer getCustomersByPan(@RequestParam String panNo) {
 		try {
 			return customerService.getCustomerByPan(panNo);
