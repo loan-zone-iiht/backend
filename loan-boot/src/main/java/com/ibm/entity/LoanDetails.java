@@ -19,14 +19,32 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.ibm.enums.StatusType;
 
-enum StatusType {
-	ACCEPTED, REJECTED, PENDING, FORECLOSURE_PENDING, FORECLOSURE_ACCEPTED;
-}
+/**
+ * Class {LoanDetails} is the entity defining the
+ * fields of all the required details 
+ * regarding a loan in the DB table.
+ * 
+ * @JsonIdentityInfo handles JSON references,
+ * and stops them becoming infinitely nested objects.
+ * No need for JsonBackReference and JsonManagedReference anymore.
+ * 
+ * @author Saswata Dutta
+ */
+
+
+
 
 @Entity
 @Table(name = "loan_loan_details_boot")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "loanId") // json infy
 public class LoanDetails {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,6 +57,7 @@ public class LoanDetails {
 	@JoinColumn(name = "manager_id") // can be approved by multiple manager
 	private Manager manager;
 //	@JsonManagedReference
+	@JsonProperty(access = Access.WRITE_ONLY)
 	@OneToMany(mappedBy = "loanDetails") // can have multiple payment histories
 	private List<PaymentHistory> paymentHistories = new ArrayList<PaymentHistory>();
 	@Column(name = "loan_principal")
@@ -55,13 +74,17 @@ public class LoanDetails {
 	private LocalDate dateBegin;
 	@Column(name = "date_end")
 	private LocalDate dateEnd;
+	@Column(name = "payment_amount")
+	private double paymentAmount;
+	@Column(name = "no_of_payments")
+	private int noOfPayments;
 	@Column(name = "bank_to_cust_payout")
 	private boolean bankToCustPayout;
-	@Column(name = "outstanding_principal")
-	private double outstandingPrincipal;
 	@Enumerated(EnumType.STRING) // only can have 4 types of values
 	@Column(name = "loan_status", length = 25)
 	private StatusType loanStatus;
+//	@Column(name = "outstanding_principal")
+//	private double outstandingPrincipal;
 //	@OneToMany(mappedBy = "loanDetailsId") // can have multiple nextPayback
 //	private ArrayList<NextPayback> nextPaybacks = new ArrayList<NextPayback>();
 
@@ -81,7 +104,6 @@ public class LoanDetails {
 		this.dateBegin = dateBegin;
 		this.dateEnd = dateEnd;
 		this.bankToCustPayout = bankToCustPayout;
-		this.outstandingPrincipal = outstandingPrincipal;
 		this.loanStatus = loanStatus;
 	}
 
@@ -93,7 +115,6 @@ public class LoanDetails {
 		this.loanId = loanId;
 	}
 
-
 	public Manager getManager() {
 		return manager;
 	}
@@ -101,7 +122,6 @@ public class LoanDetails {
 	public void setManager(Manager manager) {
 		this.manager = manager;
 	}
-
 
 	public double getLoanPrincipal() {
 		return loanPrincipal;
@@ -158,6 +178,24 @@ public class LoanDetails {
 	public void setDateEnd(LocalDate dateEnd) {
 		this.dateEnd = dateEnd;
 	}
+	
+	
+
+	public double getPaymentAmount() {
+		return paymentAmount;
+	}
+
+	public void setPaymentAmount(double paymentAmount) {
+		this.paymentAmount = paymentAmount;
+	}
+
+	public int getNoOfPayments() {
+		return noOfPayments;
+	}
+
+	public void setNoOfPayments(int noOfPayments) {
+		this.noOfPayments = noOfPayments;
+	}
 
 	public boolean isBankToCustPayout() {
 		return bankToCustPayout;
@@ -167,13 +205,7 @@ public class LoanDetails {
 		this.bankToCustPayout = bankToCustPayout;
 	}
 
-	public double getOutstandingPrincipal() {
-		return outstandingPrincipal;
-	}
 
-	public void setOutstandingPrincipal(double outstandingPrincipal) {
-		this.outstandingPrincipal = outstandingPrincipal;
-	}
 
 	public StatusType getLoanStatus() {
 		return loanStatus;

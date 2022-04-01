@@ -10,10 +10,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ibm.entity.Customer;
 import com.ibm.entity.Pan;
 import com.ibm.service.PanService;
 
+
+/**
+ * Class {PanController} is the controller class.
+ * Mainly having the routes related to pan entity.
+ * Mainly uses PanService methods.
+ * 
+ * @author Saswata Dutta
+ */
 
 @RestController
 public class PanController {
@@ -38,7 +45,7 @@ public class PanController {
 		return panService.getPanByPanNo(panNo);
 	}
 	
-	@GetMapping(path = "/get-pans/", produces = "application/json")
+	@GetMapping(path = "/get-pans", produces = "application/json")
 	public List<Pan> getAllPans() {
 		return panService.getAllPans();
 	}
