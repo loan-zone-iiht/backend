@@ -19,19 +19,6 @@ import com.ibm.pojo.PaymentTransaction;
 import com.ibm.pojo.UpdateLoanDetailsByStatus;
 import com.ibm.service.LoanDetailsService;
 
-
-/**
- * Class {LoanDetailsController} is the controller class.
- * Mainly having the routes related to loan details entity.
- * Mainly uses LoanDetailsService methods.
- * 
- * Controller paths starting with /manager/ or /manager-
- * needs a header role and it should be MANAGER which is
- * a enum of type RoleOptions.
- * 
- * @author Saswata Dutta
- */
-
 @RestController
 public class LoanDetailsController {
 	@Autowired
@@ -42,12 +29,12 @@ public class LoanDetailsController {
 		return loanDetailsService.createLoanDetails(ld, custId);
 	}
 
-	@GetMapping(path = "/manager/get-loandetails", produces = "application/json")
+	@GetMapping(path = "/get-loandetails", produces = "application/json")
 	public List<LoanDetails> getAllLoanDetails() {
 		return loanDetailsService.getAllLoanDetails();
 	}
 
-	@GetMapping(path = "/manager/get-loandetails-by-status", produces = "application/json")
+	@GetMapping(path = "/get-loandetails-by-status", produces = "application/json")
 	public List<LoanDetails> getLoanDetailsByStatus(@RequestParam StatusType status) {
 		System.out.println(status);
 		return loanDetailsService.getLoandetailsByStatus(status);
@@ -55,7 +42,7 @@ public class LoanDetailsController {
 
 //	public List<LoanDetails> upadteLoanDetails(@RequestParam Map<String,String> reqParamMap) {
 //	reqParamMap.entrySet();
-	@PostMapping(path = "/manager/update-loandetails-by-status", consumes = "application/json")
+	@PostMapping(path = "/update-loandetails-by-status", consumes = "application/json")
 	public LoanDetails upadteLoanStatus(@RequestBody UpdateLoanDetailsByStatus reqPojo) {
 //		System.err.println(status);
 		// creating enums
@@ -67,17 +54,8 @@ public class LoanDetailsController {
 			return null;
 
 	}
-	
-	@PostMapping(path = "/apply-for-foreclosure", consumes = "application/json")
-	public LoanDetails applyForForeclosure(@RequestBody UpdateLoanDetailsByStatus reqPojo) {
-		if (reqPojo.getLoanId() != 0) {
-			return loanDetailsService.updateLoanStatusFromLoanId(reqPojo.getLoanId(), reqPojo.getStatus());
-		} else
-			return null;
 
-	}
-
-	@PostMapping(path = "/manager/update-bank-to-cust-payout", consumes = "application/json")
+	@PostMapping(path = "/update-bank-to-cust-payout", consumes = "application/json")
 	public LoanDetails updateBankToCustPayout(@RequestBody Map<String, String> reqBodyMap) {
 		int loanId = Integer.parseInt(reqBodyMap.get("loanId"));
 		boolean payout = Boolean.valueOf(reqBodyMap.get("payout"));

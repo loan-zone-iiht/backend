@@ -14,14 +14,6 @@ import com.ibm.entity.Pan;
 import com.ibm.service.PanService;
 
 
-/**
- * Class {PanController} is the controller class.
- * Mainly having the routes related to pan entity.
- * Mainly uses PanService methods.
- * 
- * @author Saswata Dutta
- */
-
 @RestController
 public class PanController {
 	@Autowired

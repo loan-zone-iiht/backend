@@ -39,16 +39,12 @@ public class MessageSender {
 
 	public void send(String sms, int otp) {
 
-//		System.out.println(sms);
+		System.out.println(sms);
 		Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
 
 		String msg = "Your OTP - " + otp + " Please verify this OTP in your Application by Loan-Zone";
-		try {
-			Message message = Message.creator(new PhoneNumber(sms), new PhoneNumber(FROM_NUMBER), msg).create();
-			
-		} catch (Exception e) {
-			System.err.println("Message sending failed "+ e.getMessage());
-		}
+
+		Message message = Message.creator(new PhoneNumber(sms), new PhoneNumber(FROM_NUMBER), msg).create();
 
 	}
 
