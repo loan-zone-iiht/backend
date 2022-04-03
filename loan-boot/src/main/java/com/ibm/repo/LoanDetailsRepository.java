@@ -12,4 +12,5 @@ public interface LoanDetailsRepository extends JpaRepository<LoanDetails, Intege
 	List<LoanDetails> findAllByLoanStatus(StatusType status);
 
 	LoanDetails findByCustomer(Customer cust);
+	LoanDetails findByloanId(int id);
 }

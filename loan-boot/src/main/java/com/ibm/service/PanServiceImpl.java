@@ -10,7 +10,13 @@ import com.ibm.entity.Pan;
 import com.ibm.exception.GlobalLoanException;
 import com.ibm.repo.CustomerRepository;
 import com.ibm.repo.PanRepository;
-
+/**
+ * Class {PanServiceImpl} is a service class extending {PanService}
+ * for pan entity, which uses the methods from
+ * pan repository.
+ * 
+ * @author Saswata Dutta
+ */
 @Service
 public class PanServiceImpl implements PanService {
 	@Autowired

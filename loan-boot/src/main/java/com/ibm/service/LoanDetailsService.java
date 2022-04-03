@@ -7,7 +7,13 @@ import com.ibm.entity.PaymentHistory;
 import com.ibm.enums.StatusType;
 import com.ibm.exception.GlobalLoanException;
 import com.ibm.pojo.PaymentTransaction;
-
+/**
+ * Class {LoanDetailsService} is a service interface
+ * for loan details entity, which uses the methods from
+ * loan details repository.
+ * 
+ * @author Saswata Dutta
+ */
 public interface LoanDetailsService {
 	LoanDetails createLoanDetails(LoanDetails ld, int custId);
 	List<LoanDetails> getAllLoanDetails();
@@ -26,4 +32,5 @@ public interface LoanDetailsService {
 //	void updateOutstandingPrincipal(int loanId, double op);
 	double getPaymentAmount(int loanId);
 	LoanDetails updateLoanDetails(LoanDetails ld)throws GlobalLoanException; // for dev only
+	double getOutstandingPrincipal(int loanId);
 }

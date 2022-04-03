@@ -21,8 +21,19 @@ import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.ibm.enums.Dependents_option;
 import com.ibm.enums.GenderOptions;
+import com.ibm.enums.RoleOptions;
 import com.ibm.enums.property_type_options;
-
+/**
+ * Class {Customer} is the entity defining the
+ * fields of the customer table in DB.
+ * 
+ * @JsonIdentityInfo handles JSON references,
+ * and stops them becoming infinitely nested objects.
+ * No need for JsonBackReference and JsonManagedReference anymore.
+ * 
+ * 
+ * @author Saswata Dutta
+ */
 //@JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name = "loan_customers_boot")
@@ -52,7 +63,13 @@ public class Customer {
 	@Column(length = 15)
 	private String phone;
 	private double salary;
-	
+	@Enumerated(EnumType.STRING) // only can have 2 types of values
+	@Column(length = 12)
+	private RoleOptions role;
+//	@Column(name = "acc_no", length = 25)
+//	private String accountNo;	
+//	@OneToMany(mappedBy = "custId") // can have multiple nextPayback
+//	private List<NextPayback> nextPaybacks = new ArrayList<NextPayback>();
 	@Enumerated(EnumType.STRING)
 	private GenderOptions gender;
 	private boolean Married;
@@ -89,7 +106,13 @@ public class Customer {
 	public void setDependents(Dependents_option dependents) {
 		this.dependents = dependents;
 	}
+	public RoleOptions getRole() {
+		return role;
+	}
 
+	public void setRole(RoleOptions role) {
+		this.role = role;
+	}
 	public boolean isGradStat() {
 		return gradStat;
 	}

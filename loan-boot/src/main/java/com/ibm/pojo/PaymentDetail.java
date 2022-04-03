@@ -1,5 +1,11 @@
 package com.ibm.pojo;
-
+/**
+ * Class {PaymentDetail} is a simple POJO
+ * to handle the incoming request object from 
+ * payment details controller
+ * 
+ * @author Saswata Dutta
+ */
 public class PaymentDetail {
 	double paymentAmount;
 	int numberOfPayments;

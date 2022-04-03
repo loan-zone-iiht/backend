@@ -28,6 +28,17 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.ibm.enums.RiskOptions;
 import com.ibm.enums.StatusType;
 
+/**
+ * Class {LoanDetails} is the entity defining the
+ * fields of all the required details 
+ * regarding a loan in the DB table.
+ * 
+ * @JsonIdentityInfo handles JSON references,
+ * and stops them becoming infinitely nested objects.
+ * No need for JsonBackReference and JsonManagedReference anymore.
+ * 
+ * @author Saswata Dutta
+ */
 
 @Entity
 @Table(name = "loan_loan_details_boot")
@@ -72,6 +83,10 @@ public class LoanDetails {
 	private StatusType loanStatus;
 	@Enumerated(EnumType.STRING)
 	private RiskOptions loan_risk;
+//	@Column(name = "outstanding_principal")
+//	private double outstandingPrincipal;
+//	@OneToMany(mappedBy = "loanDetailsId") // can have multiple nextPayback
+//	private ArrayList<NextPayback> nextPaybacks = new ArrayList<NextPayback>();
 
 
 	public RiskOptions getLoan_risk() {

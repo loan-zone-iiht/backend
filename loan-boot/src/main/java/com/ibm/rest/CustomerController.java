@@ -25,7 +25,7 @@ public class CustomerController {
 	@Autowired
 	private CustomerService customerService;
 
-	@PostMapping(path = "/customer_signup", consumes = "application/json")
+	@PostMapping(path = "/customer-signup", consumes = "application/json")
 	public Customer createCustomer(@RequestBody Customer cust, @RequestParam String panNo) {
 		return customerService.createCustomer(cust, panNo);
 
@@ -48,7 +48,7 @@ public class CustomerController {
 		return customerService.updateCustomer(cust);
 
 	}
-	@PostMapping(path = "/get_customer_limit", consumes = "application/json")
+	@PostMapping(path = "/get-customer-limit", consumes = "application/json")
 	public List<Integer> get_cus_limit(@RequestBody Customer cust) {
 		int civ=cust.getPan().getCibilScore();
 		int roi;
@@ -90,12 +90,12 @@ public class CustomerController {
 		}
 	}
 
-	@GetMapping(path = "/get-customers", produces = "application/json")
+	@GetMapping(path = "/manager/get-customers", produces = "application/json")
 	public List<Customer> getAllCustomers() {
 		return customerService.getAllCustomers();
 	}
 
-	@GetMapping(path = "/get-customer-by-pan", produces = "application/json")
+	@GetMapping(path = "/manager/get-customer-by-pan", produces = "application/json")
 	public Customer getCustomersByPan(@RequestParam String panNo) {
 		try {
 			return customerService.getCustomerByPan(panNo);

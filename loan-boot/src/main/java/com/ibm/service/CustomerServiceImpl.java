@@ -11,6 +11,7 @@ import com.ibm.email.MailSender;
 import com.ibm.entity.Customer;
 import com.ibm.entity.Manager;
 import com.ibm.entity.Pan;
+import com.ibm.enums.RoleOptions;
 import com.ibm.exception.GlobalLoanException;
 import com.ibm.repo.CustomerRepository;
 
@@ -36,6 +37,7 @@ public class CustomerServiceImpl implements CustomerService {
 		Pan p = panService.getPanByPanNo(panNo); // fetching the pan via the panNo
 		p.setCustomer(cust); // setting the customer(obj) for the pan
 		cust.setPan(p); // setting the pan(obj) for the customer
+		cust.setRole(RoleOptions.CUSTOMER);// setting the role
 		return customerRepo.save(cust);
 	}
 

@@ -13,7 +13,13 @@ import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClientBuilder;
 
 
-
+/**
+ * The {AwsConfig} class is for setting up the configuration for AWS
+ * We've used AWS SES for sending email.
+ * 
+ * 
+ * @author Saswata Dutta
+ */
 
 
 

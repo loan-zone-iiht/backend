@@ -1,6 +1,7 @@
 package com.ibm.email;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
@@ -9,15 +10,21 @@ import com.amazonaws.services.simpleemail.model.Content;
 import com.amazonaws.services.simpleemail.model.Destination;
 import com.amazonaws.services.simpleemail.model.Message;
 import com.amazonaws.services.simpleemail.model.SendEmailRequest;
-
+/**
+ * Class {MailSender} is to send emails with customized body and headers,
+ * to desired recipient.
+ * 
+ * @see {AwsConfig}
+ * @author Saswata Dutta
+ */
 @Component
 public class MailSender {
 	
 	@Autowired(required = false)
 	public AmazonSimpleEmailService amazonSimpleEmailService;
-
-	private String emailContent;
+	@Value("${mail.sender}")
 	private String senderEmail;
+	private String emailContent;
 	private String receiverEmail;
 	private String emailSubject;
 
@@ -87,6 +94,7 @@ public class MailSender {
 	public void setEmailSubject(String emailSubject) {
 		this.emailSubject = emailSubject;
 	}
+	/** Custom template created for email */
 
 	private String getContentSD(String message) {
 		String content = "<!DOCTYPE html>\n" + "\n"
