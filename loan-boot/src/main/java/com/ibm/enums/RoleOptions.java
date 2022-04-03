@@ -19,4 +19,8 @@ public enum RoleOptions {
 	MANAGER, 
 	@JsonProperty("CUSTOMER")
 	CUSTOMER,
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> a81d845b5cb61ec43e5c806745901f20cd2afdbf
