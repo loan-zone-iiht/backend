@@ -19,7 +19,6 @@ import com.ibm.enums.FromOptions;
 import com.ibm.enums.PaymentMethod;
 import com.ibm.enums.PaymentType;
 import com.ibm.enums.SuccessType;
-
 /**
  * Class {PaymentHistory} is the entity defining the
  * fields of the table in DB which contains all the transactional
@@ -31,7 +30,6 @@ import com.ibm.enums.SuccessType;
  * 
  * @author Saswata Dutta
  */
-
 @Entity
 @Table(name = "loan_payment_history_boot")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id") // json infy

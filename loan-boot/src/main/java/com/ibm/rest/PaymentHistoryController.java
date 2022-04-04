@@ -14,11 +14,10 @@ import com.ibm.entity.LoanDetails;
 import com.ibm.entity.Manager;
 import com.ibm.entity.PaymentHistory;
 import com.ibm.service.PaymentHistoryService;
-
 /**
  * Class {PaymentHistoryController} is the controller class.
  * Mainly having the routes related to payment history entity.
- * Mainly uses PaymentHistoryService methods.
+ * Mainly uses PaymentHistoryService method
  * 
  * @author Saswata Dutta
  */

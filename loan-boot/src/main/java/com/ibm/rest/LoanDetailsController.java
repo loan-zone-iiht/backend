@@ -18,8 +18,6 @@ import com.ibm.enums.StatusType;
 import com.ibm.pojo.PaymentTransaction;
 import com.ibm.pojo.UpdateLoanDetailsByStatus;
 import com.ibm.service.LoanDetailsService;
-
-
 /**
  * Class {LoanDetailsController} is the controller class.
  * Mainly having the routes related to loan details entity.
@@ -31,7 +29,6 @@ import com.ibm.service.LoanDetailsService;
  * 
  * @author Saswata Dutta
  */
-
 @RestController
 public class LoanDetailsController {
 	@Autowired
@@ -67,7 +64,6 @@ public class LoanDetailsController {
 			return null;
 
 	}
-	
 	@PostMapping(path = "/apply-for-foreclosure", consumes = "application/json")
 	public LoanDetails applyForForeclosure(@RequestBody UpdateLoanDetailsByStatus reqPojo) {
 		if (reqPojo.getLoanId() != 0) {
@@ -76,7 +72,6 @@ public class LoanDetailsController {
 			return null;
 
 	}
-
 	@PostMapping(path = "/manager/update-bank-to-cust-payout", consumes = "application/json")
 	public LoanDetails updateBankToCustPayout(@RequestBody Map<String, String> reqBodyMap) {
 		int loanId = Integer.parseInt(reqBodyMap.get("loanId"));
@@ -98,10 +93,10 @@ public class LoanDetailsController {
 		return loanDetailsService.foreclosurePayment(pt);
 	}
 	
-//	@GetMapping(path = "/get-outstanding-principal", produces = "application/json")
-//	public double getOutstandingPrincipal(@RequestParam int loanId) {
-//		return loanDetailsService.getOutstandingPrincipal(loanId);
-//	}
+	@GetMapping(path = "/get-outstanding-principal", produces = "application/json")
+	public double getOutstandingPrincipal(@RequestParam int loanId) {
+		return loanDetailsService.getOutstandingPrincipal(loanId);
+	}
 	@GetMapping(path = "/get-payment-amount", produces = "application/json")
 	public double getPaymentAmount(@RequestParam int loanId) {
 		return loanDetailsService.getPaymentAmount(loanId);

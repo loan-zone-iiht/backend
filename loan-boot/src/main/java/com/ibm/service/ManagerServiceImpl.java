@@ -1,8 +1,6 @@
 package com.ibm.service;
 
-import java.text.ParseException;
 import java.util.Random;
-
 import java.util.function.Supplier;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +13,6 @@ import com.ibm.exception.GlobalLoanException;
 import com.ibm.message.MessageSender;
 import com.ibm.repo.ManagerRepository;
 
-
-
 /**
  * Class {ManagerServiceImpl} is a service class extending {ManagerService}
  * for manager entity, which uses the methods from
@@ -26,7 +22,6 @@ import com.ibm.repo.ManagerRepository;
  * @author Sayak Mukherjee
  */
 
-
 @Service
 public class ManagerServiceImpl implements ManagerService {
 
@@ -34,10 +29,8 @@ public class ManagerServiceImpl implements ManagerService {
 	private ManagerRepository managerRepo;
 	@Autowired
 	private MailSender mailSender;
-	
 	@Autowired
-     private MessageSender msender;
-
+    private MessageSender msender;
 	Supplier<Integer> generateOtp = () -> {
 		Random rnd = new Random();
 		int n = 100000 + rnd.nextInt(900000);
@@ -47,27 +40,29 @@ public class ManagerServiceImpl implements ManagerService {
 
 	@Override
 	public Manager createManager(Manager mgr) throws GlobalLoanException {
-		mgr.setRole(RoleOptions.MANAGER);// setting the role
+		// setting the role
+
+		mgr.setRole(RoleOptions.MANAGER);
 		return managerRepo.save(mgr);
 	}
 
+	// auth for manager
 	/**
 	 * @author Saswata Dutta
 	 * */
-	// auth for manager
 	@Override
 	public Manager loginManager(String email, String phone, String password, int otp) throws GlobalLoanException {
 		Manager mgr = managerRepo.loginManager(email, phone);
 		System.err.println(mgr);
 		if (mgr == null) {
 			throw new GlobalLoanException("404", "No manager with this credential");
-		// to make sure the password is passed as a param
-		} else if (password!=null && mgr.getPassword().equals(password)) {
+		} else if (password!=null &&  mgr.getPassword().equals(password)) {
+			// to make sure if password is wrong but provided, the below condition should
+			// not enter. And also mgr.getOtp() is not null and otp(primitive int) is not 0(default)
 			return mgr;
-		// to make sure if password is wrong but provided, the below condition should
+		} // to make sure if password is wrong but provided, the below condition should
 		// not enter. And also mgr.getOtp() is not null and otp(primitive int) is not 0(default)
-		} else if(mgr.getOtp()!=null && otp!=0 && this.verifyOtp(mgr, otp)){
-			// verify otp
+	 else if(mgr.getOtp()!=null && otp!=0 && this.verifyOtp(mgr, otp)){
 			return mgr;
 		}else {	
 			// wrong credentials
@@ -96,12 +91,7 @@ public class ManagerServiceImpl implements ManagerService {
 		mailSender.setReceiverEmail(mgr.getEmail());
 		mailSender.setEmailContent("Manager OTP: " + generatedOtp);
 		mailSender.sendEmail();
-		
-		
 		msender.send(mgr.getPhone(),generatedOtp);
-		
-		
-		
 		return mgr;
 	}
 
@@ -114,5 +104,8 @@ public class ManagerServiceImpl implements ManagerService {
 			return false;
 		}
 	}
+
+
+
 
 }

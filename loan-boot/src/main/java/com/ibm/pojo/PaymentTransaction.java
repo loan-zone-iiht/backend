@@ -4,15 +4,13 @@ import com.ibm.enums.FromOptions;
 import com.ibm.enums.PaymentMethod;
 import com.ibm.enums.PaymentType;
 import com.ibm.enums.SuccessType;
-
 /**
  * Class {PaymentTransaction} is a simple POJO
  * to handle the incoming request object from 
- * payment history/transaction controllers.
+ * payment history/transaction controller
  * 
  * @author Saswata Dutta
  */
-
 public class PaymentTransaction {
 	private int loanId;
 	private FromOptions fromOptions;

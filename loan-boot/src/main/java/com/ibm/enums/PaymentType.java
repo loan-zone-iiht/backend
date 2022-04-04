@@ -1,7 +1,6 @@
 package com.ibm.enums;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 /**
  * Enum {PaymentType} is for the options defining
  * the type of a transaction/payment.
@@ -11,7 +10,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * 
  * @author Saswata Dutta
  */
-
 public enum PaymentType {
 	@JsonProperty("REGULAR")
 	REGULAR, 

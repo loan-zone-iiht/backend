@@ -24,7 +24,6 @@ import com.ibm.pojo.PaymentTransaction;
 import com.ibm.repo.CustomerRepository;
 import com.ibm.repo.LoanDetailsRepository;
 import com.ibm.repo.ManagerRepository;
-
 /**
  * Class {LoanDetailsServiceImpl} is a service class extending
  * {LoanDetailsService} for loan details entity, which uses the methods from
@@ -44,10 +43,8 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 	private ManagerService managerService;
 	@Autowired
 	private PaymentHistoryService paymneHistoryService;
-
 	@Autowired
 	private MailSender mailSender;
-
 	// functional interface used to calc payments
 	Function<LoanDetails, PaymentDetail> paymentDetailCalculator = (ld) -> {
 
@@ -94,7 +91,6 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 			mailSender.setReceiverEmail(cust.getEmail());
 			mailSender.setEmailContent(mailContent);
 			mailSender.sendEmail();
-
 			return ld;
 		} else {
 			throw new GlobalLoanException("409", "Customer already has an ongoing loan");
@@ -111,7 +107,6 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 		return loanDetailsRepo.findAllByLoanStatus(status);
 	}
 
-	// Update the status of the loans via the manager only
 	@Override
 	public LoanDetails updateLoanStatusFromLoanId(int loanId, StatusType status) {
 		LoanDetails ld = loanDetailsRepo.findById(loanId).get();
@@ -121,23 +116,21 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 			ld.setPaymentAmount(pd.getPaymentAmount());
 			ld.setNoOfPayments(pd.getNumberOfPayments());
 			ld.setDateBegin(LocalDate.now());
-
 			// sending mail confirming loan application
-			String mailContent = "Your loan application for amount. " + ld.getLoanPrincipal()
-					+ " has been accepted, your payback amount is " + ld.getPaymentAmount()
-					+ " Which you need to pay regularly.";
+						String mailContent = "Your loan application for amount. " + ld.getLoanPrincipal()
+								+ " has been accepted, your payback amount is " + ld.getPaymentAmount()
+								+ " Which you need to pay regularly.";
 
-			mailSender.setEmailSubject("Congratulations, your loan application has been accepted.");
-			mailSender.setReceiverEmail(ld.getCustomer().getEmail());
-			mailSender.setEmailContent(mailContent);
-			mailSender.sendEmail();
-
+						mailSender.setEmailSubject("Congratulations, your loan application has been accepted.");
+						mailSender.setReceiverEmail(ld.getCustomer().getEmail());
+						mailSender.setEmailContent(mailContent);
+						mailSender.sendEmail();
 			// setting next payment date
-
+			
 			/******************
 			 * Next payment date
-			 *******************/
-		} else if (status == status.FORECLOSURE_ACCEPTED) {
+			 * *******************/
+		}else if (status == status.FORECLOSURE_ACCEPTED) {
 			ld.setPaymentAmount(ld.getPaymentAmount() * ld.getNoOfPayments());
 			ld.setNoOfPayments(1); // forecloure means customer pays out all remaining loans at once
 
@@ -154,16 +147,14 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 		loanDetailsRepo.save(ld);
 		return ld;
 	}
-
-	// apply for foreclosure via customer
+	
 	@Override
 	public LoanDetails applyForForeclosure(int loanId) {
 		LoanDetails ld = this.getLoanDetailsByLoanId(loanId);
-		ld.setPaymentAmount(ld.getNoOfPayments() * ld.getPaymentAmount());
+		ld.setPaymentAmount(ld.getNoOfPayments()*ld.getPaymentAmount());
 		ld.setLoanStatus(StatusType.FORECLOSURE_PENDING);
 		loanDetailsRepo.save(ld);
-
-		// sending mail confirming foreclosure application
+		// sending mail confirming received foreclosure application
 		String mailContent = "We've received your application for foreclosure, Hang tight until we review the application. We'll get back to you soon. Cheers!!";
 
 		mailSender.setEmailSubject("Thanks for applying for foreclosure.");
@@ -172,7 +163,6 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 		mailSender.sendEmail();
 		return ld;
 	}
-
 	// specify if bank has given money to customer or not
 	// if payout is true, it means bank has sent money to customer.
 	@Override
@@ -180,7 +170,6 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 		LoanDetails ld = loanDetailsRepo.findById(loanId).get();
 		ld.setBankToCustPayout(payout);
 		loanDetailsRepo.save(ld);
-
 		// sending mail confirming that bank paid the customer
 		String mailContent = "We've delivered the total amount of Rs " + ld.getLoanPrincipal()
 				+ " to your bank account. In case you didn't recived it, please mail us at "
@@ -192,7 +181,6 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 		mailSender.sendEmail();
 		return ld;
 	}
-
 	/**
 	 * Method {payBack} creates a single payment history, for a customer's regular
 	 * payment. We can pay the monthly/quaterly/yearly or any time gap via the
@@ -226,7 +214,6 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 				ld.setLoanStatus(StatusType.COMPLETED);
 				ld.setPaymentAmount(0);
 				ld.setDateEnd(LocalDate.now());
-
 				// sending mail confirming of getting final payment via payback
 				String mailContent = "We've recieved an amount of Rs " + oldPaymentAmount + " via "
 						+ pt.getPaymentMethod()
@@ -240,7 +227,6 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 
 			// saving the history
 			paymneHistoryService.createPaymentHistory(ph);
-
 			// sending success mail of receiving regular payback.
 			String mailContent = "We've received your payback of Rs " + ld.getPaymentAmount() + " via "
 					+ pt.getPaymentMethod() + " payment.";
@@ -249,14 +235,12 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 			mailSender.setReceiverEmail(ld.getCustomer().getEmail());
 			mailSender.setEmailContent(mailContent);
 			mailSender.sendEmail();
-
 			return ph;
 		} else {
 			throw new GlobalLoanException("404", "No ongoing loan with this id");
 		}
 
 	}
-
 	/**
 	 * Method {downpayment} is needed for a customer to make a downpayment of 1 or
 	 * more than 1 reguler paybacks.
@@ -269,13 +253,9 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 	public PaymentHistory downpayment(PaymentTransaction pt) {
 		LoanDetails ld = this.getLoanDetailsByLoanId(pt.getLoanId());
 		double oldPaymentAmount = ld.getPaymentAmount();
-		/**
-		 * Here, no of payments needed, should be more than 1 and less than total no of
-		 * payments left.
-		 */
-		if (ld.getNoOfPayments() >= pt.getNoOfPayments() && pt.getNoOfPayments() >= 1) {
+		// no of payments needed should be more than 1 and less than total no of payments left
+		if (ld.getNoOfPayments() >= pt.getNoOfPayments() && pt.getNoOfPayments()>=1) {
 			ld.setNoOfPayments(ld.getNoOfPayments() - pt.getNoOfPayments()); // payments left
-
 			/**
 			 * If the downpayment includes the last possible loan payback in that case we
 			 * change the PaymentAmount to 0. To create the DB entry for the transaction
@@ -302,7 +282,7 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 			// setting values;
 			ph.setLoanDetails(ld);
 			ph.setCustomer(ld.getCustomer());
-			ph.setPaymentAmount(oldPaymentAmount * pt.getNoOfPayments());
+			ph.setPaymentAmount(oldPaymentAmount * pt.getNoOfPayments()); // total amount
 			ph.setPaymentDate(LocalDate.now());
 			ph.setPaymentFrom(pt.getFromOptions());
 			ph.setPaymentMethod(pt.getPaymentMethod());
@@ -311,73 +291,53 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 			// saving the history
 			paymneHistoryService.createPaymentHistory(ph);
 
-			// saving the history
-			paymneHistoryService.createPaymentHistory(ph);
-
-			// sending success mail of receiving downpayment.
-			String mailContent = "We've received your downpayment of Rs " + ld.getPaymentAmount() + " via "
-					+ pt.getPaymentMethod() + " payment. Which is a total of " + pt.getNoOfPayments()
-					+ " regular payments.";
-
-			mailSender.setEmailSubject("Thanks for paying the downpayment.");
-			mailSender.setReceiverEmail(ld.getCustomer().getEmail());
-			mailSender.setEmailContent(mailContent);
-			mailSender.sendEmail();
-
 			return ph;
 		} else {
 			throw new GlobalLoanException("404", "send proper number of payments (more than 1 and less than total");
 		}
 	}
-
-	/**
-	 * Method {foreclosurePayment} is needed for a customer to make a payment for
-	 * their final foreclosure amount.
-	 * 
-	 * @author Saswata Dutta
-	 */
+	
 	@Override
 	public PaymentHistory foreclosurePayment(PaymentTransaction pt) {
 		LoanDetails ld = this.getLoanDetailsByLoanId(pt.getLoanId());
 		double oldPaymentAmount = ld.getPaymentAmount();
-		if (ld.getLoanStatus() == StatusType.FORECLOSURE_ACCEPTED) {
-			ld.setNoOfPayments(0);
-			ld.setDateEnd(LocalDate.now());
-			ld.setPaymentAmount(0);
-			ld.setLoanStatus(StatusType.COMPLETED);
+			if(ld.getLoanStatus()==StatusType.FORECLOSURE_ACCEPTED) {
+				ld.setNoOfPayments(0);
+				ld.setDateEnd(LocalDate.now());
+				ld.setPaymentAmount(0);
+				ld.setLoanStatus(StatusType.COMPLETED);
 
-			// creating history
-			PaymentHistory ph = new PaymentHistory();
+				// creating history
+				PaymentHistory ph = new PaymentHistory();
 
-			// setting values;
-			ph.setLoanDetails(ld);
-			ph.setCustomer(ld.getCustomer());
-			ph.setPaymentAmount(oldPaymentAmount);
-			ph.setPaymentDate(LocalDate.now());
-			ph.setPaymentFrom(pt.getFromOptions());
-			ph.setPaymentMethod(pt.getPaymentMethod());
-			ph.setPaymentType(PaymentType.FORECLOSURE);
-			ph.setSuccessType(pt.getSuccessType());
-			// saving the history
-			paymneHistoryService.createPaymentHistory(ph);
+				// setting values;
+				ph.setLoanDetails(ld);
+				ph.setCustomer(ld.getCustomer());
+				ph.setPaymentAmount(oldPaymentAmount);
+				ph.setPaymentDate(LocalDate.now());
+				ph.setPaymentFrom(pt.getFromOptions());
+				ph.setPaymentMethod(pt.getPaymentMethod());
+				ph.setPaymentType(PaymentType.FORECLOSURE);
+				ph.setSuccessType(pt.getSuccessType());
+				// saving the history
+				paymneHistoryService.createPaymentHistory(ph);
+				// sending mail confirming of getting final payment via foreclosure
+				String mailContent = "We've recieved an amount of Rs " + oldPaymentAmount + " via " + pt.getPaymentMethod()
+						+ " payment. This was your final payment, Thanks for paying us back. Your loan payback is now completed";
 
-			// sending mail confirming of getting final payment via foreclosure
-			String mailContent = "We've recieved an amount of Rs " + oldPaymentAmount + " via " + pt.getPaymentMethod()
-					+ " payment. This was your final payment, Thanks for paying us back. Your loan payback is now completed";
+				mailSender.setEmailSubject("Congratulations, you've paid back your complete loan.");
+				mailSender.setReceiverEmail(ld.getCustomer().getEmail());
+				mailSender.setEmailContent(mailContent);
+				mailSender.sendEmail();
 
-			mailSender.setEmailSubject("Congratulations, you've paid back your complete loan.");
-			mailSender.setReceiverEmail(ld.getCustomer().getEmail());
-			mailSender.setEmailContent(mailContent);
-			mailSender.sendEmail();
+		
+				return ph;
 
-			return ph;
-
-		} else {
-			throw new GlobalLoanException("404", "Not accepted for foreclosure");
-		}
+			}else {
+				throw new GlobalLoanException("404", "Not accepted for foreclosure");
+			}
 	}
 
-	// get loan details by it's id
 	@Override
 	public LoanDetails getLoanDetailsByLoanId(int loanId) {
 		return loanDetailsRepo.findById(loanId)
@@ -400,7 +360,6 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 //		ld.setOutstandingPrincipal(op);
 //		loanDetailsRepo.save(ld);
 //	}
-
 	// use updateLoanStatusFromLoanId for this
 	// DONT USE
 	@Override
@@ -438,6 +397,14 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 	@Override
 	public LoanDetails updateLoanDetails(LoanDetails ld) {
 		return loanDetailsRepo.save(ld);
+	}
+
+	@Override
+	public double getOutstandingPrincipal(int loanId) {
+		// TODO Auto-generated method stub
+		LoanDetails ld = loanDetailsRepo.findById(loanId).get();
+		double outStanding=ld.getPaymentAmount()*ld.getNoOfPayments();
+		return outStanding;
 	}
 
 }

@@ -8,15 +8,9 @@ import com.ibm.entity.Customer;
 import com.ibm.entity.LoanDetails;
 import com.ibm.enums.StatusType;
 
-/**
- * Class {LoanDetailsRepository} is a repository interface
- * for Loan details entity.
- * 
- * @author Saswata Dutta
- */
-
 public interface LoanDetailsRepository extends JpaRepository<LoanDetails, Integer> {
 	List<LoanDetails> findAllByLoanStatus(StatusType status);
 
 	LoanDetails findByCustomer(Customer cust);
+	LoanDetails findByloanId(int id);
 }

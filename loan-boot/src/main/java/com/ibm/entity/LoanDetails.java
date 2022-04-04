@@ -25,6 +25,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.ibm.enums.RiskOptions;
 import com.ibm.enums.StatusType;
 
 /**
@@ -38,9 +39,6 @@ import com.ibm.enums.StatusType;
  * 
  * @author Saswata Dutta
  */
-
-
-
 
 @Entity
 @Table(name = "loan_loan_details_boot")
@@ -83,10 +81,21 @@ public class LoanDetails {
 	@Enumerated(EnumType.STRING) // only can have 4 types of values
 	@Column(name = "loan_status", length = 25)
 	private StatusType loanStatus;
+	@Enumerated(EnumType.STRING)
+	private RiskOptions loan_risk;
 //	@Column(name = "outstanding_principal")
 //	private double outstandingPrincipal;
 //	@OneToMany(mappedBy = "loanDetailsId") // can have multiple nextPayback
 //	private ArrayList<NextPayback> nextPaybacks = new ArrayList<NextPayback>();
+
+
+	public RiskOptions getLoan_risk() {
+		return loan_risk;
+	}
+
+	public void setLoan_risk(RiskOptions loan_risk) {
+		this.loan_risk = loan_risk;
+	}
 
 	public LoanDetails() {
 	}

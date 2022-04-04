@@ -10,7 +10,6 @@ import com.amazonaws.services.simpleemail.model.Content;
 import com.amazonaws.services.simpleemail.model.Destination;
 import com.amazonaws.services.simpleemail.model.Message;
 import com.amazonaws.services.simpleemail.model.SendEmailRequest;
-
 /**
  * Class {MailSender} is to send emails with customized body and headers,
  * to desired recipient.
@@ -18,17 +17,13 @@ import com.amazonaws.services.simpleemail.model.SendEmailRequest;
  * @see {AwsConfig}
  * @author Saswata Dutta
  */
-
 @Component
 public class MailSender {
 	
 	@Autowired(required = false)
 	public AmazonSimpleEmailService amazonSimpleEmailService;
-	
 	@Value("${mail.sender}")
 	private String senderEmail;
-	
-	
 	private String emailContent;
 	private String receiverEmail;
 	private String emailSubject;
@@ -36,8 +31,8 @@ public class MailSender {
 	public MailSender() {
 		this.emailContent = this.getContentSD("Default email");
 
-//		this.senderEmail = "sayak.94.sm@gmail.com";
-		this.receiverEmail = "sayak.94.sm@gmail.com";
+		this.senderEmail = "teamloanzone@gmail.com";
+		this.receiverEmail = "teamloanzone@gmail.com";
 		this.emailSubject = "Loan zone updates";
 	}
 
@@ -47,8 +42,7 @@ public class MailSender {
 		this.receiverEmail = receiverEmail;
 		this.emailSubject = emailSubject;
 	}
-	
-	/** Method to send mail */
+
 	public void sendEmail() {
 
 		try {
@@ -100,8 +94,8 @@ public class MailSender {
 	public void setEmailSubject(String emailSubject) {
 		this.emailSubject = emailSubject;
 	}
-	
 	/** Custom template created for email */
+
 	private String getContentSD(String message) {
 		String content = "<!DOCTYPE html>\n" + "\n"
 				+ "<html lang=\"en\" xmlns:o=\"urn:schemas-microsoft-com:office:office\" xmlns:v=\"urn:schemas-microsoft-com:vml\">\n"

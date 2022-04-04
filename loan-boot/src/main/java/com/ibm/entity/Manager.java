@@ -16,9 +16,8 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.ibm.enums.RoleOptions;
-
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 /**
  * Class {LoanDetails} is the entity defining the
  * fields of the manager table in DB.
@@ -29,8 +28,6 @@ import com.ibm.enums.RoleOptions;
  * 
  * @author Saswata Dutta
  */
-
-
 @Entity
 @Table(name = "loan_managers_boot")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id") // json infy
@@ -54,7 +51,6 @@ public class Manager {
 	@Enumerated(EnumType.STRING) // only can have 2 types of values
 	@Column(length = 12)
 	private RoleOptions role;
-
 	public Manager() {
 	}
 
@@ -64,6 +60,13 @@ public class Manager {
 		this.phone = phone;
 	}
 
+	public RoleOptions getRole() {
+		return role;
+	}
+
+	public void setRole(RoleOptions role) {
+		this.role = role;
+	}
 	public int getId() {
 		return id;
 	}
@@ -111,24 +114,12 @@ public class Manager {
 	public void setLoanDetails(List<LoanDetails> loanDetails) {
 		this.loanDetails = loanDetails;
 	}
-	
-	
-
 	public Integer getOtp() {
 		return otp;
 	}
 
 	public void setOtp(Integer otp) {
 		this.otp = otp;
-	}
-	
-
-	public RoleOptions getRole() {
-		return role;
-	}
-
-	public void setRole(RoleOptions role) {
-		this.role = role;
 	}
 
 	@Override
