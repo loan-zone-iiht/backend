@@ -117,38 +117,50 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 		LoanDetails ld = loanDetailsRepo.findById(loanId).get();
 		// logic for every status
 		if (status == status.ACCEPTED) {
-			PaymentDetail pd = paymentDetailCalculator.apply(ld);
-			ld.setPaymentAmount(pd.getPaymentAmount());
-			ld.setNoOfPayments(pd.getNumberOfPayments());
-			ld.setDateBegin(LocalDate.now());
+			// manager can only accept loan if it's in pending
+			if (ld.getLoanStatus() == StatusType.PENDING) {
 
-			// sending mail confirming loan application
-			String mailContent = "Your loan application for amount. " + ld.getLoanPrincipal()
-					+ " has been accepted, your payback amount is " + ld.getPaymentAmount()
-					+ " Which you need to pay regularly.";
+				PaymentDetail pd = paymentDetailCalculator.apply(ld);
+				ld.setPaymentAmount(pd.getPaymentAmount());
+				ld.setNoOfPayments(pd.getNumberOfPayments());
+				ld.setDateBegin(LocalDate.now());
 
-			mailSender.setEmailSubject("Congratulations, your loan application has been accepted.");
-			mailSender.setReceiverEmail(ld.getCustomer().getEmail());
-			mailSender.setEmailContent(mailContent);
-			mailSender.sendEmail();
+				// sending mail confirming loan application
+				String mailContent = "Your loan application for amount. " + ld.getLoanPrincipal()
+						+ " has been accepted, your payback amount is " + ld.getPaymentAmount()
+						+ " Which you need to pay regularly.";
 
-			// setting next payment date
+				mailSender.setEmailSubject("Congratulations, your loan application has been accepted.");
+				mailSender.setReceiverEmail(ld.getCustomer().getEmail());
+				mailSender.setEmailContent(mailContent);
+				mailSender.sendEmail();
 
-			/******************
-			 * Next payment date
-			 *******************/
+				// setting next payment date
+
+				/******************
+				 * Next payment date
+				 *******************/
+			} else {
+				throw new GlobalLoanException("400",
+						"Current status of the loan should be PENDING, it's: " + ld.getLoanStatus());
+			}
 		} else if (status == status.FORECLOSURE_ACCEPTED) {
-			ld.setPaymentAmount(ld.getPaymentAmount() * ld.getNoOfPayments());
-			ld.setNoOfPayments(1); // forecloure means customer pays out all remaining loans at once
-
-			// sending mail confirming foreclosure acceptence
-			String mailContent = "Your application for foreclosure has been accepted. You need to pay a total of "
-					+ ld.getPaymentAmount() + " as your final payment.";
-
-			mailSender.setEmailSubject("Congratulations, foreclosure application has been accepted.");
-			mailSender.setReceiverEmail(ld.getCustomer().getEmail());
-			mailSender.setEmailContent(mailContent);
-			mailSender.sendEmail();
+			if(ld.getLoanStatus() == status.FORECLOSURE_PENDING) {
+				ld.setPaymentAmount(ld.getPaymentAmount() * ld.getNoOfPayments());
+				ld.setNoOfPayments(1); // forecloure means customer pays out all remaining loans at once
+				
+				// sending mail confirming foreclosure acceptence
+				String mailContent = "Your application for foreclosure has been accepted. You need to pay a total of "
+						+ ld.getPaymentAmount() + " as your final payment.";
+				
+				mailSender.setEmailSubject("Congratulations, foreclosure application has been accepted.");
+				mailSender.setReceiverEmail(ld.getCustomer().getEmail());
+				mailSender.setEmailContent(mailContent);
+				mailSender.sendEmail();
+			}else {
+				throw new GlobalLoanException("400",
+						"Current status of the loan should be FORECLOSURE_PENDING, it's: " + ld.getLoanStatus());
+			}
 		}
 		ld.setLoanStatus(status);
 		loanDetailsRepo.save(ld);
@@ -252,7 +264,8 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 
 			return ph;
 		} else {
-			throw new GlobalLoanException("404", "No ongoing loan with this id");
+			throw new GlobalLoanException("404",
+					"No ongoing loan with this id which has status: " + StatusType.ACCEPTED);
 		}
 
 	}
@@ -378,6 +391,7 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 	}
 
 	// get loan details by it's id
+	// to know the payback amounts
 	@Override
 	public LoanDetails getLoanDetailsByLoanId(int loanId) {
 		return loanDetailsRepo.findById(loanId)

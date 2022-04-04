@@ -14,6 +14,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.ibm.enums.FromOptions;
 import com.ibm.enums.PaymentMethod;
@@ -42,10 +45,12 @@ public class PaymentHistory {
 //	@JsonBackReference
 	@ManyToOne
 	@JoinColumn(name = "cust_id")
+	@JsonIdentityReference(alwaysAsId = true)
 	private Customer customer;
 //	@JsonBackReference
 	@ManyToOne
 	@JoinColumn(name = "loan_details_id")
+	@JsonIdentityReference(alwaysAsId = true)
 	private LoanDetails loanDetails;
 	@Column(name = "payment_amount")
 	private double paymentAmount;
