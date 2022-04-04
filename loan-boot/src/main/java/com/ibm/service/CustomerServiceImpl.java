@@ -15,6 +15,16 @@ import com.ibm.enums.RoleOptions;
 import com.ibm.exception.GlobalLoanException;
 import com.ibm.repo.CustomerRepository;
 
+
+/**
+ * Class {CustomerServiceImpl} is a service class extending {CustomerService}
+ * for customer entity, which uses the methods from
+ * customer repository.
+ * 
+ * @author Saswata Dutta
+ * @author Subhajit Sanyal
+ */
+
 @Service
 public class CustomerServiceImpl implements CustomerService {
 

@@ -6,6 +6,14 @@ import org.springframework.data.jpa.repository.Query;
 import com.ibm.entity.Customer;
 import com.ibm.entity.Pan;
 
+
+/**
+ * Class {PanRepository} is a repository interface
+ * for pan entity.
+ * 
+ * @author Saswata Dutta
+ */
+
 public interface PanRepository extends JpaRepository<Pan, String> {
 	Pan findByCustomer(Customer cust);
 

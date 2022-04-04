@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @JsonProperty represents enums in JSON format.
  * It's mainly for reqest response objects in controllers.
  * 
+ * @author Saswata Dutta
  */
 public enum FromOptions {
 	@JsonProperty("BANK")

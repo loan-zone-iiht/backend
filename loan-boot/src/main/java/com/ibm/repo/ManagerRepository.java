@@ -5,6 +5,13 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.ibm.entity.Manager;
 
+/**
+ * Class {ManagerRepository} is a repository interface
+ * for manager entity.
+ * 
+ * @author Saswata Dutta
+ */
+
 public interface ManagerRepository extends JpaRepository<Manager, Integer> {
 	@Query(value = "SELECT * FROM loan_managers_boot ORDER BY RAND() LIMIT 1", nativeQuery = true)
 	Manager getRandomManager();
