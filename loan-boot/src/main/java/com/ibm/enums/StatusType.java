@@ -2,7 +2,6 @@ package com.ibm.enums;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-
 /**
  * Enum {StatusType} is for the options defining
  * the type of a loan/loandetail.
@@ -13,8 +12,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * 
  * @author Saswata Dutta
  */
-
-
 public enum StatusType {
 	@JsonProperty("ACCEPTED")
 	ACCEPTED, 

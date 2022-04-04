@@ -34,7 +34,6 @@ import com.ibm.service.LoanDetailsService;
  * 
  * @author Saswata Dutta
  */
-
 @RestController
 public class LoanDetailsController {
 	@Autowired
@@ -92,7 +91,6 @@ public class LoanDetailsController {
 			return null;
 
 	}
-
 	@PostMapping(path = "/apply-for-foreclosure", consumes = "application/json")
 	public ResponseEntity<LoanDetails> applyForForeclosure(@RequestBody UpdateLoanDetailsByStatus reqPojo) {
 		if (reqPojo.getLoanId() != 0) {
@@ -107,7 +105,6 @@ public class LoanDetailsController {
 			return null;
 
 	}
-
 	@PostMapping(path = "/manager/update-bank-to-cust-payout", consumes = "application/json")
 	public ResponseEntity<LoanDetails> updateBankToCustPayout(@RequestBody Map<String, String> reqBodyMap) {
 		int loanId = Integer.parseInt(reqBodyMap.get("loanId"));
@@ -149,11 +146,13 @@ public class LoanDetailsController {
 				rh.getHeaders(), HttpStatus.OK);
 		return res;
 	}
+	
+	@GetMapping(path = "/get-outstanding-principal", produces = "application/json")
+	public double getOutstandingPrincipal(@RequestParam int loanId) {
+		return loanDetailsService.getOutstandingPrincipal(loanId);
+	}
 
-//	@GetMapping(path = "/get-outstanding-principal", produces = "application/json")
-//	public double getOutstandingPrincipal(@RequestParam int loanId) {
-//		return loanDetailsService.getOutstandingPrincipal(loanId);
-//	}
+	// to know the next payment amount
 	@GetMapping(path = "/get-payment-amount", produces = "application/json")
 	public ResponseEntity<Double> getPaymentAmount(@RequestParam int loanId) {
 //		return loanDetailsService.getPaymentAmount(loanId);

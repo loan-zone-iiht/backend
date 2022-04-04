@@ -23,7 +23,7 @@ public class WebSocketConfig  implements WebSocketMessageBrokerConfigurer{
 	
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
-		 System.out.println("Stomp endpoint config method");
+		System.out.println("Stomp endpoint config method");
 		 registry.addEndpoint("/gs-guide-websocket").withSockJS();
 	}
 }

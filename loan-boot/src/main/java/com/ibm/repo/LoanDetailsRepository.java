@@ -13,10 +13,12 @@ import com.ibm.enums.StatusType;
  * for Loan details entity.
  * 
  * @author Saswata Dutta
+ * @author Subhajir Sanyal
  */
 
 public interface LoanDetailsRepository extends JpaRepository<LoanDetails, Integer> {
 	List<LoanDetails> findAllByLoanStatus(StatusType status);
 
 	LoanDetails findByCustomer(Customer cust);
+	LoanDetails findByloanId(int id);
 }

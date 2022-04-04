@@ -1,5 +1,6 @@
 package com.ibm.rest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.annotations.NotFound;
@@ -17,6 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.ibm.entity.Customer;
 import com.ibm.entity.Manager;
 import com.ibm.exception.GlobalLoanException;
+import com.ibm.pojo.LoginPOJO;
 import com.ibm.pojo.ResponseHeader;
 import com.ibm.service.CustomerService;
 
@@ -27,6 +29,7 @@ import com.ibm.service.CustomerService;
  * Controller paths starting with /manager/ or /manager- needs a header role and
  * it should be MANAGER which is a enum of type RoleOptions.
  * 
+ * @author Subhajit Sanyal
  * @author Saswata Dutta
  */
 
@@ -36,7 +39,7 @@ public class CustomerController {
 	private CustomerService customerService;
 	private ResponseHeader rh;
 
-	@PostMapping(path = "/create-customer", consumes = "application/json")
+	@PostMapping(path = "/customer-signup", consumes = "application/json")
 	public ResponseEntity<Customer> createCustomer(@RequestBody Customer cust, @RequestParam String panNo) {
 //		return customerService.createCustomer(cust, panNo);
 		rh = new ResponseHeader();
@@ -45,6 +48,24 @@ public class CustomerController {
 				rh.getHeaders(), HttpStatus.OK);
 		return res;
 
+	}
+
+	@PostMapping(path = "/customer-login", consumes = "application/json")
+	public ResponseEntity<Customer> customerLogin(@RequestBody LoginPOJO login) {
+
+//		return customerService.loginCustomer(login.getEmail(), login.getPhone(), login.getPassword(),login.getOtp());
+		rh = new ResponseHeader();
+		rh.putOnMap("success", "true");
+		ResponseEntity<Customer> res = new ResponseEntity<Customer>(
+				customerService.loginCustomer(login.getEmail(), login.getPhone(), login.getPassword(), login.getOtp()),
+				rh.getHeaders(), HttpStatus.OK);
+		return res;
+	}
+
+	@PostMapping(path = "/customer-send-otp", consumes = "application/json")
+	public Customer customerCheckOtp(@RequestBody LoginPOJO login) {
+
+		return customerService.sendOtp(login.getEmail(), login.getPhone());
 	}
 
 	@PostMapping(path = "/update-customer", consumes = "application/json")
@@ -56,6 +77,36 @@ public class CustomerController {
 				rh.getHeaders(), HttpStatus.OK);
 		return res;
 
+	}
+
+	@PostMapping(path = "/get-customer-limit", consumes = "application/json")
+	public List<Integer> get_cus_limit(@RequestBody Customer cust) {
+		int civ = cust.getPan().getCibilScore();
+		int roi;
+		int principal;
+		List<Integer> list = new ArrayList<Integer>();
+		if (civ < 500) {
+			roi = 100;
+			principal = 0;
+		} else if (civ >= 500 && civ < 600) {
+			roi = 15;
+			principal = (int) fetch_principal(cust, roi);
+
+		} else {
+			roi = 12;
+			principal = (int) fetch_principal(cust, roi);
+		}
+		list.add(roi);
+		list.add(principal);
+
+		return list;
+
+	}
+
+	private double fetch_principal(Customer cust, int roi) {
+		double e = (cust.getSalary() / 100) * 20;
+		double principal = (e * 20 * roi) / (((roi * 20) / 100) + 1);
+		return principal;
 	}
 
 	@GetMapping(path = "/get-customers/{id}", produces = "application/json")
@@ -96,6 +147,16 @@ public class CustomerController {
 		} catch (GlobalLoanException e) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
 		}
+	}
+
+	@PostMapping(path = "/create-customer", consumes = "application/json")
+	public ResponseEntity<Customer> createCustomerOld(@RequestBody Customer cust, @RequestParam String panNo) {
+		// return customerService.createCustomer(cust, panNo);
+		rh = new ResponseHeader();
+		rh.putOnMap("success", "true");
+		ResponseEntity<Customer> res = new ResponseEntity<Customer>(customerService.createCustomer(cust, panNo),
+				rh.getHeaders(), HttpStatus.OK);
+		return res;
 	}
 
 }

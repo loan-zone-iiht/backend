@@ -1,7 +1,6 @@
 package com.ibm.enums;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 /**
  * Enum {PaymentMethod} is for the options defining
  * the methods of a transaction/payment.

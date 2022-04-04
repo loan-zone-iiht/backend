@@ -1,7 +1,6 @@
 package com.ibm.enums;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 /**
  * Enum {SuccessType} is for the options defining
  * the success type of a transaction/payment.
@@ -12,7 +11,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * 
  * @author Saswata Dutta
  */
-
 public enum SuccessType {
 	@JsonProperty("SUCCESSFUL")
 	SUCCESSFUL, 
