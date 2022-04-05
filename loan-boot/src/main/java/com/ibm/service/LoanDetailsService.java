@@ -15,7 +15,6 @@ import com.ibm.pojo.PaymentTransaction;
  * @author Saswata Dutta
  * @author Ashish Gupta
  */
-
 public interface LoanDetailsService {
 	LoanDetails createLoanDetails(LoanDetails ld, int custId);
 
@@ -44,7 +43,10 @@ public interface LoanDetailsService {
 //	void updateOutstandingPrincipal(int loanId, double op);
 	double getPaymentAmount(int loanId);
 
+	void getRejectionReason(int loanId, String rect_reason); // Method to get the reason of rejection
+
 	LoanDetails updateLoanDetails(LoanDetails ld) throws GlobalLoanException; // for dev only
 
-	String getRejectionReason(int loanId); // Method to get the reason of rejection
+	double getOutstandingPrincipal(int loanId);
+
 }

@@ -9,7 +9,6 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-
 /**
  * Class {Pan} is the entity defining the
  * fields of the pan table in DB.
@@ -20,7 +19,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
  * 
  * @author Saswata Dutta
  */
-
+//@JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name = "loan_pan_boot")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "panNo") // json infy

@@ -4,8 +4,6 @@ import java.util.List;
 
 import com.ibm.entity.Pan;
 import com.ibm.exception.GlobalLoanException;
-
-
 /**
  * Class {PanService} is a service interface
  * for pan entity, which uses the methods from
@@ -13,7 +11,6 @@ import com.ibm.exception.GlobalLoanException;
  * 
  * @author Saswata Dutta
  */
-
 public interface PanService {
 	Pan createPan(Pan p);
 	Pan updatePan(Pan p) throws GlobalLoanException;

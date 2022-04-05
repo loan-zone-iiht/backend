@@ -1,14 +1,11 @@
 package com.ibm.pojo;
-
-
 /**
  * Class {LoginPOJO} is a simple POJO
  * to handle the incoming request object from 
- * login controllers.
+ * login controller
  * 
  * @author Saswata Dutta
  */
-
 public class LoginPOJO {
 	private String email;
 	private String phone;
@@ -45,8 +42,5 @@ public class LoginPOJO {
 	public void setId(int id) {
 		this.id = id;
 	}
-	
-	
-	
 	
 }

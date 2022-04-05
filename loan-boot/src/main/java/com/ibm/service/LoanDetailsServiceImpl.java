@@ -39,10 +39,8 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 	private ManagerService managerService;
 	@Autowired
 	private PaymentHistoryService paymneHistoryService;
-
 	@Autowired
 	private MailSender mailSender;
-
 	// functional interface used to calc payments
 	Function<LoanDetails, PaymentDetail> paymentDetailCalculator = (ld) -> {
 
@@ -89,7 +87,6 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 			mailSender.setReceiverEmail(cust.getEmail());
 			mailSender.setEmailContent(mailContent);
 			mailSender.sendEmail();
-
 			return ld;
 		} else {
 			throw new GlobalLoanException("409", "Customer already has an ongoing loan");
@@ -106,61 +103,75 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 		return loanDetailsRepo.findAllByLoanStatus(status);
 	}
 
-	// Update the status of the loans via the manager only
 	@Override
 	public LoanDetails updateLoanStatusFromLoanId(int loanId, StatusType status) {
 		LoanDetails ld = loanDetailsRepo.findById(loanId).get();
 		// logic for every status
 		if (status == status.ACCEPTED) {
-			PaymentDetail pd = paymentDetailCalculator.apply(ld);
-			ld.setPaymentAmount(pd.getPaymentAmount());
-			ld.setNoOfPayments(pd.getNumberOfPayments());
-			ld.setDateBegin(LocalDate.now());
+			// manager can only accept loan if it's in pending
+			if (ld.getLoanStatus() == StatusType.PENDING) {
 
-			// sending mail confirming loan application
-			String mailContent = "Your loan application for amount. " + ld.getLoanPrincipal()
-					+ " has been accepted, your payback amount is " + ld.getPaymentAmount()
-					+ " Which you need to pay regularly.";
+				PaymentDetail pd = paymentDetailCalculator.apply(ld);
+				ld.setPaymentAmount(pd.getPaymentAmount());
+				ld.setNoOfPayments(pd.getNumberOfPayments());
+				ld.setDateBegin(LocalDate.now());
 
-			mailSender.setEmailSubject("Congratulations, your loan application has been accepted.");
-			mailSender.setReceiverEmail(ld.getCustomer().getEmail());
-			mailSender.setEmailContent(mailContent);
-			mailSender.sendEmail();
+				// sending mail confirming loan application
+				String mailContent = "Your loan application for amount. " + ld.getLoanPrincipal()
+						+ " has been accepted, your payback amount is " + ld.getPaymentAmount()
+						+ " Which you need to pay regularly.";
 
-			// setting next payment date
+				mailSender.setEmailSubject("Congratulations, your loan application has been accepted.");
+				mailSender.setReceiverEmail(ld.getCustomer().getEmail());
+				mailSender.setEmailContent(mailContent);
+				mailSender.sendEmail();
 
-			/******************
-			 * Next payment date
-			 *******************/
+				// setting next payment date
+
+				/******************
+				 * Next payment date
+				 *******************/
+			} else {
+				throw new GlobalLoanException("400",
+						"Current status of the loan should be PENDING, it's: " + ld.getLoanStatus());
+			}
 		} else if (status == status.FORECLOSURE_ACCEPTED) {
-			ld.setPaymentAmount(ld.getPaymentAmount() * ld.getNoOfPayments());
-			ld.setNoOfPayments(1); // forecloure means customer pays out all remaining loans at once
+			if (ld.getLoanStatus() == status.FORECLOSURE_PENDING) {
+				ld.setPaymentAmount(ld.getPaymentAmount() * ld.getNoOfPayments());
+				ld.setNoOfPayments(1); // forecloure means customer pays out all remaining loans at once
 
-			// sending mail confirming foreclosure acceptence
-			String mailContent = "Your application for foreclosure has been accepted. You need to pay a total of "
-					+ ld.getPaymentAmount() + " as your final payment.";
+				// sending mail confirming foreclosure acceptence
+				String mailContent = "Your application for foreclosure has been accepted. You need to pay a total of "
+						+ ld.getPaymentAmount() + " as your final payment.";
 
-			mailSender.setEmailSubject("Congratulations, foreclosure application has been accepted.");
-			mailSender.setReceiverEmail(ld.getCustomer().getEmail());
-			mailSender.setEmailContent(mailContent);
-			mailSender.sendEmail();
-		} else if (status == status.REJECTED) {
-			ld.setReason_rejection(null); // Coming from front end, needs to be modified.
+				mailSender.setEmailSubject("Congratulations, foreclosure application has been accepted.");
+				mailSender.setReceiverEmail(ld.getCustomer().getEmail());
+				mailSender.setEmailContent(mailContent);
+				mailSender.sendEmail();
+			} else if (status == status.REJECTED) {
+				String mailContent = "We are sorry to inform that your loan application is being rejected. The reason is "
+						+ ld.getReason_rejection() + " .";
+				mailSender.setEmailSubject("Loan application rejected.");
+				mailSender.setReceiverEmail(ld.getCustomer().getEmail());
+				mailSender.setEmailContent(mailContent);
+				mailSender.sendEmail();
+			} else {
+				throw new GlobalLoanException("400",
+						"Current status of the loan should be FORECLOSURE_PENDING, it's: " + ld.getLoanStatus());
+			}
 		}
 		ld.setLoanStatus(status);
 		loanDetailsRepo.save(ld);
 		return ld;
 	}
 
-	// apply for foreclosure via customer
 	@Override
 	public LoanDetails applyForForeclosure(int loanId) {
 		LoanDetails ld = this.getLoanDetailsByLoanId(loanId);
 		ld.setPaymentAmount(ld.getNoOfPayments() * ld.getPaymentAmount());
 		ld.setLoanStatus(StatusType.FORECLOSURE_PENDING);
 		loanDetailsRepo.save(ld);
-
-		// sending mail confirming foreclosure application
+		// sending mail confirming received foreclosure application
 		String mailContent = "We've received your application for foreclosure, Hang tight until we review the application. We'll get back to you soon. Cheers!!";
 
 		mailSender.setEmailSubject("Thanks for applying for foreclosure.");
@@ -177,7 +188,6 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 		LoanDetails ld = loanDetailsRepo.findById(loanId).get();
 		ld.setBankToCustPayout(payout);
 		loanDetailsRepo.save(ld);
-
 		// sending mail confirming that bank paid the customer
 		String mailContent = "We've delivered the total amount of Rs " + ld.getLoanPrincipal()
 				+ " to your bank account. In case you didn't recived it, please mail us at "
@@ -223,7 +233,6 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 				ld.setLoanStatus(StatusType.COMPLETED);
 				ld.setPaymentAmount(0);
 				ld.setDateEnd(LocalDate.now());
-
 				// sending mail confirming of getting final payment via payback
 				String mailContent = "We've recieved an amount of Rs " + oldPaymentAmount + " via "
 						+ pt.getPaymentMethod()
@@ -237,7 +246,6 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 
 			// saving the history
 			paymneHistoryService.createPaymentHistory(ph);
-
 			// sending success mail of receiving regular payback.
 			String mailContent = "We've received your payback of Rs " + ld.getPaymentAmount() + " via "
 					+ pt.getPaymentMethod() + " payment.";
@@ -246,10 +254,10 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 			mailSender.setReceiverEmail(ld.getCustomer().getEmail());
 			mailSender.setEmailContent(mailContent);
 			mailSender.sendEmail();
-
 			return ph;
 		} else {
-			throw new GlobalLoanException("404", "No ongoing loan with this id");
+			throw new GlobalLoanException("404",
+					"No ongoing loan with this id which has status: " + StatusType.ACCEPTED);
 		}
 
 	}
@@ -266,13 +274,10 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 	public PaymentHistory downpayment(PaymentTransaction pt) {
 		LoanDetails ld = this.getLoanDetailsByLoanId(pt.getLoanId());
 		double oldPaymentAmount = ld.getPaymentAmount();
-		/**
-		 * Here, no of payments needed, should be more than 1 and less than total no of
-		 * payments left.
-		 */
+		// no of payments needed should be more than 1 and less than total no of
+		// payments left
 		if (ld.getNoOfPayments() >= pt.getNoOfPayments() && pt.getNoOfPayments() >= 1) {
 			ld.setNoOfPayments(ld.getNoOfPayments() - pt.getNoOfPayments()); // payments left
-
 			/**
 			 * If the downpayment includes the last possible loan payback in that case we
 			 * change the PaymentAmount to 0. To create the DB entry for the transaction
@@ -299,7 +304,7 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 			// setting values;
 			ph.setLoanDetails(ld);
 			ph.setCustomer(ld.getCustomer());
-			ph.setPaymentAmount(oldPaymentAmount * pt.getNoOfPayments());
+			ph.setPaymentAmount(oldPaymentAmount * pt.getNoOfPayments()); // total amount
 			ph.setPaymentDate(LocalDate.now());
 			ph.setPaymentFrom(pt.getFromOptions());
 			ph.setPaymentMethod(pt.getPaymentMethod());
@@ -308,31 +313,12 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 			// saving the history
 			paymneHistoryService.createPaymentHistory(ph);
 
-			// saving the history
-			paymneHistoryService.createPaymentHistory(ph);
-
-			// sending success mail of receiving downpayment.
-			String mailContent = "We've received your downpayment of Rs " + ld.getPaymentAmount() + " via "
-					+ pt.getPaymentMethod() + " payment. Which is a total of " + pt.getNoOfPayments()
-					+ " regular payments.";
-
-			mailSender.setEmailSubject("Thanks for paying the downpayment.");
-			mailSender.setReceiverEmail(ld.getCustomer().getEmail());
-			mailSender.setEmailContent(mailContent);
-			mailSender.sendEmail();
-
 			return ph;
 		} else {
 			throw new GlobalLoanException("404", "send proper number of payments (more than 1 and less than total");
 		}
 	}
 
-	/**
-	 * Method {foreclosurePayment} is needed for a customer to make a payment for
-	 * their final foreclosure amount.
-	 * 
-	 * @author Saswata Dutta
-	 */
 	@Override
 	public PaymentHistory foreclosurePayment(PaymentTransaction pt) {
 		LoanDetails ld = this.getLoanDetailsByLoanId(pt.getLoanId());
@@ -357,7 +343,6 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 			ph.setSuccessType(pt.getSuccessType());
 			// saving the history
 			paymneHistoryService.createPaymentHistory(ph);
-
 			// sending mail confirming of getting final payment via foreclosure
 			String mailContent = "We've recieved an amount of Rs " + oldPaymentAmount + " via " + pt.getPaymentMethod()
 					+ " payment. This was your final payment, Thanks for paying us back. Your loan payback is now completed";
@@ -375,6 +360,7 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 	}
 
 	// get loan details by it's id
+	// to know the payback amounts
 	@Override
 	public LoanDetails getLoanDetailsByLoanId(int loanId) {
 		return loanDetailsRepo.findById(loanId)
@@ -397,19 +383,19 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 //		ld.setOutstandingPrincipal(op);
 //		loanDetailsRepo.save(ld);
 //	}
-
 	// use updateLoanStatusFromLoanId for this
 	// DONT USE
 	@Override
 	public double getPaymentAmount(int loanId) {
 		LoanDetails ld = loanDetailsRepo.findById(loanId).get();
 
-		double rate = ld.getLoanInterestRate() / 100 / (12 / ld.getLoanFrequency());
-		int numberOfPayments = (int) (ld.getLoanTenure() * (12 / ld.getLoanFrequency()));
+		if (ld.getLoanStatus() != StatusType.COMPLETED) {
+			double rate = ld.getLoanInterestRate() / 100 / (12 / ld.getLoanFrequency());
+			int numberOfPayments = (int) (ld.getLoanTenure() * (12 / ld.getLoanFrequency()));
 
-		double paymentAmount = (rate * ld.getLoanPrincipal()) / (1 - Math.pow(1 + rate, -numberOfPayments));
+			double paymentAmount = (rate * ld.getLoanPrincipal()) / (1 - Math.pow(1 + rate, -numberOfPayments));
 
-		return Math.round(paymentAmount);
+			return Math.round(paymentAmount);
 
 //		LoanDetails ld = loanDetailsRepo.findById(loanId).get();
 //		double EAR = Math.pow((1 + ld.getLoanInterestRate() / 100 / 12), 12) - 1;
@@ -430,6 +416,11 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 
 //		int numberOfPeriod = ld.getLoanTenure();
 //		return 0;
+
+		} else {
+			throw new GlobalLoanException("404", "The loan is completed");
+		}
+
 	}
 
 	@Override
@@ -447,9 +438,17 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 	 */
 
 	@Override
-	public String getRejectionReason(int loanId) {
+	public void getRejectionReason(int loanId, String rect_reason) {
 		LoanDetails ld = this.getLoanDetailsByLoanId(loanId);
-		return ld.getReason_rejection();
+		ld.setReason_rejection(rect_reason);
+	}
+
+	@Override
+	public double getOutstandingPrincipal(int loanId) {
+		// TODO Auto-generated method stub
+		LoanDetails ld = loanDetailsRepo.findById(loanId).get();
+		double outStanding = ld.getPaymentAmount() * ld.getNoOfPayments();
+		return outStanding;
 	}
 
 }

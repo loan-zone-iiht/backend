@@ -14,12 +14,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.ibm.enums.FromOptions;
 import com.ibm.enums.PaymentMethod;
 import com.ibm.enums.PaymentType;
 import com.ibm.enums.SuccessType;
-
 /**
  * Class {PaymentHistory} is the entity defining the
  * fields of the table in DB which contains all the transactional
@@ -31,7 +33,6 @@ import com.ibm.enums.SuccessType;
  * 
  * @author Saswata Dutta
  */
-
 @Entity
 @Table(name = "loan_payment_history_boot")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id") // json infy
@@ -42,10 +43,12 @@ public class PaymentHistory {
 //	@JsonBackReference
 	@ManyToOne
 	@JoinColumn(name = "cust_id")
+	@JsonIdentityReference(alwaysAsId = true)
 	private Customer customer;
 //	@JsonBackReference
 	@ManyToOne
 	@JoinColumn(name = "loan_details_id")
+	@JsonIdentityReference(alwaysAsId = true)
 	private LoanDetails loanDetails;
 	@Column(name = "payment_amount")
 	private double paymentAmount;

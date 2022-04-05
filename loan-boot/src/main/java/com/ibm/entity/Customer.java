@@ -18,37 +18,42 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
-import com.ibm.enums.RoleOptions;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-
+import com.ibm.enums.Dependents_option;
+import com.ibm.enums.GenderOptions;
+import com.ibm.enums.RoleOptions;
+import com.ibm.enums.property_type_options;
 
 /**
- * Class {Customer} is the entity defining the
- * fields of the customer table in DB.
+ * Class {Customer} is the entity defining the fields of the customer table in
+ * DB.
  * 
- * @JsonIdentityInfo handles JSON references,
- * and stops them becoming infinitely nested objects.
- * No need for JsonBackReference and JsonManagedReference anymore.
+ * @JsonIdentityInfo handles JSON references, and stops them becoming infinitely
+ *                   nested objects. No need for JsonBackReference and
+ *                   JsonManagedReference anymore.
  * 
- * 
+ * @author Sayak Mukherjee
  * @author Saswata Dutta
  * @author Ashish Gupta
+ * @author Subhajit Sanyal
  */
-
-
+//@JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name = "loan_customers_boot")
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id") // json infy
 public class Customer {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id; //Bank account no.
+	private int id; // Bank account no.
+
+//	@JsonIgnore
 	@OneToOne // can have one pan no
 	@JoinColumn(name = "pan_no")
 	private Pan pan;
 	@OneToOne // can have one loan details at a time
 	@JoinColumn(name = "loan_detail_id")
 	private LoanDetails loanDetail;
+//	@JsonManagedReference
 	@OneToMany(mappedBy = "customer") // can have multiple payment histories
 	private List<PaymentHistory> paymentHistories = new ArrayList<PaymentHistory>();
 	@Column(length = 25)
@@ -68,6 +73,81 @@ public class Customer {
 //	private String accountNo;	
 //	@OneToMany(mappedBy = "custId") // can have multiple nextPayback
 //	private List<NextPayback> nextPaybacks = new ArrayList<NextPayback>();
+	@Enumerated(EnumType.STRING)
+	private GenderOptions gender;
+	private boolean Married;
+	@Enumerated(EnumType.STRING)
+	private Dependents_option dependents;
+	private boolean gradStat;
+	private boolean isSelfEmployed;
+	private int coApplicantIncome = 0;
+	private property_type_options propertyType;
+
+	private Integer otp;
+
+	public GenderOptions getGender() {
+		return gender;
+	}
+
+	public void setGender(GenderOptions gender) {
+		this.gender = gender;
+	}
+
+	public boolean isMarried() {
+		return Married;
+	}
+
+	public void setMarried(boolean married) {
+		Married = married;
+	}
+
+	public Dependents_option getDependents() {
+		return dependents;
+	}
+
+	public void setDependents(Dependents_option dependents) {
+		this.dependents = dependents;
+	}
+
+	public RoleOptions getRole() {
+		return role;
+	}
+
+	public void setRole(RoleOptions role) {
+		this.role = role;
+	}
+
+	public boolean isGradStat() {
+		return gradStat;
+	}
+
+	public void setGradStat(boolean gradStat) {
+		this.gradStat = gradStat;
+	}
+
+	public boolean isSelfEmployed() {
+		return isSelfEmployed;
+	}
+
+	public void setSelfEmployed(boolean isSelfEmployed) {
+		this.isSelfEmployed = isSelfEmployed;
+	}
+
+	public int getCoApplicantIncome() {
+		return coApplicantIncome;
+	}
+
+	public void setCoApplicantIncome(int coApplicantIncome) {
+		this.coApplicantIncome = coApplicantIncome;
+	}
+
+	public property_type_options getPropertyType() {
+		return propertyType;
+	}
+
+	public void setPropertyType(property_type_options propertyType) {
+		this.propertyType = propertyType;
+	}
 
 	public Customer() {
 	}
@@ -78,8 +158,6 @@ public class Customer {
 		this.email = email;
 		this.phone = phone;
 	}
-	
-
 
 	public int getId() {
 		return id;
@@ -96,7 +174,6 @@ public class Customer {
 	public void setPan(Pan pan) {
 		this.pan = pan;
 	}
-
 
 	public String getName() {
 		return name;
@@ -130,7 +207,6 @@ public class Customer {
 		this.salary = salary;
 	}
 
-	
 	public LoanDetails getLoanDetail() {
 		return loanDetail;
 	}
@@ -154,15 +230,13 @@ public class Customer {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
-	
-	
-	public RoleOptions getRole() {
-		return role;
+
+	public Integer getOtp() {
+		return otp;
 	}
 
-	public void setRole(RoleOptions role) {
-		this.role = role;
+	public void setOtp(Integer otp) {
+		this.otp = otp;
 	}
 
 	@Override
