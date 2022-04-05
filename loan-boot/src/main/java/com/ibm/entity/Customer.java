@@ -32,6 +32,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
  * 
  * 
  * @author Saswata Dutta
+ * @author Ashish Gupta
  */
 
 
@@ -41,7 +42,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 public class Customer {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	private int id; //Bank account no.
 	@OneToOne // can have one pan no
 	@JoinColumn(name = "pan_no")
 	private Pan pan;

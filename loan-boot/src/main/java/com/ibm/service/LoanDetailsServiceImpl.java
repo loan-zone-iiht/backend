@@ -1,10 +1,7 @@
 package com.ibm.service;
 
-import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,15 +12,12 @@ import com.ibm.entity.Customer;
 import com.ibm.entity.LoanDetails;
 import com.ibm.entity.Manager;
 import com.ibm.entity.PaymentHistory;
-import com.ibm.enums.FromOptions;
 import com.ibm.enums.PaymentType;
 import com.ibm.enums.StatusType;
 import com.ibm.exception.GlobalLoanException;
 import com.ibm.pojo.PaymentDetail;
 import com.ibm.pojo.PaymentTransaction;
-import com.ibm.repo.CustomerRepository;
 import com.ibm.repo.LoanDetailsRepository;
-import com.ibm.repo.ManagerRepository;
 
 /**
  * Class {LoanDetailsServiceImpl} is a service class extending
@@ -31,6 +25,7 @@ import com.ibm.repo.ManagerRepository;
  * loan details repository.
  * 
  * @author Saswata Dutta
+ * @author Ashish Gupta
  */
 
 @Service
@@ -149,6 +144,8 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 			mailSender.setReceiverEmail(ld.getCustomer().getEmail());
 			mailSender.setEmailContent(mailContent);
 			mailSender.sendEmail();
+		} else if (status == status.REJECTED) {
+			ld.setReason_rejection(null); // Coming from front end, needs to be modified.
 		}
 		ld.setLoanStatus(status);
 		loanDetailsRepo.save(ld);
@@ -186,7 +183,7 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 				+ " to your bank account. In case you didn't recived it, please mail us at "
 				+ ld.getCustomer().getEmail() + ".";
 
-		mailSender.setEmailSubject("Congratulations, we've deliverd the Rs " + ld.getLoanPrincipal() + " to you.");
+		mailSender.setEmailSubject("Congratulations, we've deliverd the amount " + ld.getLoanPrincipal() + " to you.");
 		mailSender.setReceiverEmail(ld.getCustomer().getEmail());
 		mailSender.setEmailContent(mailContent);
 		mailSender.sendEmail();
@@ -438,6 +435,21 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 	@Override
 	public LoanDetails updateLoanDetails(LoanDetails ld) {
 		return loanDetailsRepo.save(ld);
+	}
+
+	/**
+	 * Method {getRejectionReason} is used to display why the loan application is
+	 * rejected.
+	 * 
+	 * A string stating the reason will be displayed.
+	 * 
+	 * @author Ashish Gupta
+	 */
+
+	@Override
+	public String getRejectionReason(int loanId) {
+		LoanDetails ld = this.getLoanDetailsByLoanId(loanId);
+		return ld.getReason_rejection();
 	}
 
 }

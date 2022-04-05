@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ibm.entity.Customer;
 import com.ibm.entity.LoanDetails;
 import com.ibm.entity.PaymentHistory;
 import com.ibm.enums.StatusType;
@@ -19,17 +18,16 @@ import com.ibm.pojo.PaymentTransaction;
 import com.ibm.pojo.UpdateLoanDetailsByStatus;
 import com.ibm.service.LoanDetailsService;
 
-
 /**
- * Class {LoanDetailsController} is the controller class.
- * Mainly having the routes related to loan details entity.
- * Mainly uses LoanDetailsService methods.
+ * Class {LoanDetailsController} is the controller class. Mainly having the
+ * routes related to loan details entity. Mainly uses LoanDetailsService
+ * methods.
  * 
- * Controller paths starting with /manager/ or /manager-
- * needs a header role and it should be MANAGER which is
- * a enum of type RoleOptions.
+ * Controller paths starting with /manager/ or /manager- needs a header role and
+ * it should be MANAGER which is a enum of type RoleOptions.
  * 
  * @author Saswata Dutta
+ * @author Ashish Gupta
  */
 
 @RestController
@@ -67,7 +65,7 @@ public class LoanDetailsController {
 			return null;
 
 	}
-	
+
 	@PostMapping(path = "/apply-for-foreclosure", consumes = "application/json")
 	public LoanDetails applyForForeclosure(@RequestBody UpdateLoanDetailsByStatus reqPojo) {
 		if (reqPojo.getLoanId() != 0) {
@@ -84,24 +82,27 @@ public class LoanDetailsController {
 		LoanDetails ld = loanDetailsService.updateBankToCustPayout(loanId, payout);
 		return ld;
 	}
-   
+
 	@PostMapping(path = "/pay-back", consumes = "application/json")
 	public PaymentHistory payBack(@RequestBody PaymentTransaction pt) {
 		return loanDetailsService.payBack(pt);
 	}
+
 	@PostMapping(path = "/downpayment", consumes = "application/json")
 	public PaymentHistory downpayment(@RequestBody PaymentTransaction pt) {
 		return loanDetailsService.downpayment(pt);
 	}
+
 	@PostMapping(path = "/foreclosure-payment", consumes = "application/json")
 	public PaymentHistory foreclosurePayment(@RequestBody PaymentTransaction pt) {
 		return loanDetailsService.foreclosurePayment(pt);
 	}
-	
+
 //	@GetMapping(path = "/get-outstanding-principal", produces = "application/json")
 //	public double getOutstandingPrincipal(@RequestParam int loanId) {
 //		return loanDetailsService.getOutstandingPrincipal(loanId);
 //	}
+
 	@GetMapping(path = "/get-payment-amount", produces = "application/json")
 	public double getPaymentAmount(@RequestParam int loanId) {
 		return loanDetailsService.getPaymentAmount(loanId);
@@ -118,4 +119,8 @@ public class LoanDetailsController {
 		return loanDetailsService.getLoanDetailsByLoanId(loanId);
 	}
 
+	@GetMapping(path = "/rejection-reason/{loanId}", produces = "application/json")
+	public String rejectionReason(@PathVariable int loanId) {
+		return loanDetailsService.getRejectionReason(loanId);
+	}
 }
