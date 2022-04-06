@@ -1,10 +1,7 @@
 package com.ibm.service;
 
-import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,15 +12,12 @@ import com.ibm.entity.Customer;
 import com.ibm.entity.LoanDetails;
 import com.ibm.entity.Manager;
 import com.ibm.entity.PaymentHistory;
-import com.ibm.enums.FromOptions;
 import com.ibm.enums.PaymentType;
 import com.ibm.enums.StatusType;
 import com.ibm.exception.GlobalLoanException;
 import com.ibm.pojo.PaymentDetail;
 import com.ibm.pojo.PaymentTransaction;
-import com.ibm.repo.CustomerRepository;
 import com.ibm.repo.LoanDetailsRepository;
-import com.ibm.repo.ManagerRepository;
 
 /**
  * Class {LoanDetailsServiceImpl} is a service class extending
@@ -31,6 +25,7 @@ import com.ibm.repo.ManagerRepository;
  * loan details repository.
  * 
  * @author Saswata Dutta
+ * @author Ashish Gupta
  */
 
 @Service
@@ -153,6 +148,13 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 				mailSender.setReceiverEmail(ld.getCustomer().getEmail());
 				mailSender.setEmailContent(mailContent);
 				mailSender.sendEmail();
+			} else if (status == status.REJECTED) {
+				String mailContent = "We are sorry to inform that your loan application is being rejected. The reason is "
+						+ ld.getReason_rejection() + " .";
+				mailSender.setEmailSubject("Loan application rejected.");
+				mailSender.setReceiverEmail(ld.getCustomer().getEmail());
+				mailSender.setEmailContent(mailContent);
+				mailSender.sendEmail();
 			} else {
 				throw new GlobalLoanException("400",
 						"Current status of the loan should be FORECLOSURE_PENDING, it's: " + ld.getLoanStatus());
@@ -191,7 +193,7 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 				+ " to your bank account. In case you didn't recived it, please mail us at "
 				+ ld.getCustomer().getEmail() + ".";
 
-		mailSender.setEmailSubject("Congratulations, we've deliverd the Rs " + ld.getLoanPrincipal() + " to you.");
+		mailSender.setEmailSubject("Congratulations, we've deliverd the amount " + ld.getLoanPrincipal() + " to you.");
 		mailSender.setReceiverEmail(ld.getCustomer().getEmail());
 		mailSender.setEmailContent(mailContent);
 		mailSender.sendEmail();
@@ -415,7 +417,7 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 //		int numberOfPeriod = ld.getLoanTenure();
 //		return 0;
 
-		}else {
+		} else {
 			throw new GlobalLoanException("404", "The loan is completed");
 		}
 
@@ -424,6 +426,21 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 	@Override
 	public LoanDetails updateLoanDetails(LoanDetails ld) {
 		return loanDetailsRepo.save(ld);
+	}
+
+	/**
+	 * Method {getRejectionReason} is used to display why the loan application is
+	 * rejected.
+	 * 
+	 * A string stating the reason will be displayed.
+	 * 
+	 * @author Ashish Gupta
+	 */
+
+	@Override
+	public void getRejectionReason(int loanId, String rect_reason) {
+		LoanDetails ld = this.getLoanDetailsByLoanId(loanId);
+		ld.setReason_rejection(rect_reason);
 	}
 
 	@Override

@@ -18,15 +18,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.ibm.enums.RoleOptions;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
+
 /**
- * Class {LoanDetails} is the entity defining the
- * fields of the manager table in DB.
+ * Class {LoanDetails} is the entity defining the fields of the manager table in
+ * DB.
  * 
- * @JsonIdentityInfo handles JSON references,
- * and stops them becoming infinitely nested objects.
- * No need for JsonBackReference and JsonManagedReference anymore.
+ * @JsonIdentityInfo handles JSON references, and stops them becoming infinitely
+ *                   nested objects. No need for JsonBackReference and
+ *                   JsonManagedReference anymore.
  * 
  * @author Saswata Dutta
+ * @author Ashish Gupta
  */
 @Entity
 @Table(name = "loan_managers_boot")
@@ -51,6 +53,7 @@ public class Manager {
 	@Enumerated(EnumType.STRING) // only can have 2 types of values
 	@Column(length = 12)
 	private RoleOptions role;
+
 	public Manager() {
 	}
 
@@ -67,6 +70,7 @@ public class Manager {
 	public void setRole(RoleOptions role) {
 		this.role = role;
 	}
+
 	public int getId() {
 		return id;
 	}
@@ -114,6 +118,7 @@ public class Manager {
 	public void setLoanDetails(List<LoanDetails> loanDetails) {
 		this.loanDetails = loanDetails;
 	}
+
 	public Integer getOtp() {
 		return otp;
 	}

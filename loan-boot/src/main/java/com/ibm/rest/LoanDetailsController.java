@@ -4,10 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ibm.entity.Customer;
 import com.ibm.entity.LoanDetails;
 import com.ibm.entity.PaymentHistory;
 import com.ibm.enums.StatusType;
@@ -34,6 +31,7 @@ import com.ibm.service.LoanDetailsService;
  * it should be MANAGER which is a enum of type RoleOptions.
  * 
  * @author Saswata Dutta
+ * @author Ashish Gupta
  */
 
 @CrossOrigin
@@ -94,6 +92,7 @@ public class LoanDetailsController {
 			return null;
 
 	}
+
 	@PostMapping(path = "/apply-for-foreclosure", consumes = "application/json")
 	public ResponseEntity<LoanDetails> applyForForeclosure(@RequestBody UpdateLoanDetailsByStatus reqPojo) {
 		if (reqPojo.getLoanId() != 0) {
@@ -101,13 +100,13 @@ public class LoanDetailsController {
 			rh = new ResponseHeader();
 			rh.putOnMap("success", "true");
 			ResponseEntity<LoanDetails> res = new ResponseEntity<LoanDetails>(
-					loanDetailsService.applyForForeclosure(reqPojo.getLoanId()),
-					rh.getHeaders(), HttpStatus.OK);
+					loanDetailsService.applyForForeclosure(reqPojo.getLoanId()), rh.getHeaders(), HttpStatus.OK);
 			return res;
 		} else
 			return null;
 
 	}
+
 	@PostMapping(path = "/manager/update-bank-to-cust-payout", consumes = "application/json")
 	public ResponseEntity<LoanDetails> updateBankToCustPayout(@RequestBody Map<String, String> reqBodyMap) {
 		int loanId = Integer.parseInt(reqBodyMap.get("loanId"));
@@ -119,6 +118,11 @@ public class LoanDetailsController {
 		ResponseEntity<LoanDetails> res = new ResponseEntity<LoanDetails>(ld, rh.getHeaders(), HttpStatus.OK);
 		return res;
 	}
+
+//	@GetMapping(path = "/get-outstanding-principal", produces = "application/json")
+//	public double getOutstandingPrincipal(@RequestParam int loanId) {
+//		return loanDetailsService.getOutstandingPrincipal(loanId);
+//	}
 
 	@PostMapping(path = "/pay-back", consumes = "application/json")
 	public ResponseEntity<PaymentHistory> payBack(@RequestBody PaymentTransaction pt) {
@@ -145,11 +149,11 @@ public class LoanDetailsController {
 //		return loanDetailsService.foreclosurePayment(pt);
 		rh = new ResponseHeader();
 		rh.putOnMap("success", "true");
-		ResponseEntity<PaymentHistory> res = new ResponseEntity<PaymentHistory>(loanDetailsService.foreclosurePayment(pt),
-				rh.getHeaders(), HttpStatus.OK);
+		ResponseEntity<PaymentHistory> res = new ResponseEntity<PaymentHistory>(
+				loanDetailsService.foreclosurePayment(pt), rh.getHeaders(), HttpStatus.OK);
 		return res;
 	}
-	
+
 	@GetMapping(path = "/get-outstanding-principal", produces = "application/json")
 	public double getOutstandingPrincipal(@RequestParam int loanId) {
 		return loanDetailsService.getOutstandingPrincipal(loanId);
@@ -171,11 +175,11 @@ public class LoanDetailsController {
 //		return loanDetailsService.getLoanDetailsByLoanId(loanId);
 		rh = new ResponseHeader();
 		rh.putOnMap("success", "true");
-		ResponseEntity<LoanDetails> res = new ResponseEntity<LoanDetails>(loanDetailsService.getLoanDetailsByLoanId(loanId),
-				rh.getHeaders(), HttpStatus.OK);
+		ResponseEntity<LoanDetails> res = new ResponseEntity<LoanDetails>(
+				loanDetailsService.getLoanDetailsByLoanId(loanId), rh.getHeaders(), HttpStatus.OK);
 		return res;
 	}
-	
+
 	// dev
 	@PostMapping(path = "/update-loandetails", consumes = "application/json")
 	public ResponseEntity<LoanDetails> upadteLoanStatus(@RequestBody LoanDetails ld) {
@@ -187,5 +191,15 @@ public class LoanDetailsController {
 		return res;
 	}
 
+	@PostMapping(path = "/rejection-reason", produces = "application/json")
+	public ResponseEntity<String> rejectionReason(@RequestBody Map<Integer, String> reqBodyMap) {
+		loanDetailsService.getRejectionReason(Integer.parseInt(reqBodyMap.get("loanId")),
+				reqBodyMap.get("rect_reason"));
 
+		rh = new ResponseHeader();
+		rh.putOnMap("success", "true");
+		ResponseEntity<String> res = new ResponseEntity<String>("Rejection reason updated.", rh.getHeaders(),
+				HttpStatus.OK);
+		return res;
+	}
 }
