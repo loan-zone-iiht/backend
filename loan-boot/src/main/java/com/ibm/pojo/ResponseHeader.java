@@ -14,6 +14,7 @@ public class ResponseHeader {
 	
 
 	public ResponseHeader() {
+		headers.add("Access-Control-Expose-Headers", "success");
 	}
 
 	public MultiValueMap<String, String> getHeaders() {
