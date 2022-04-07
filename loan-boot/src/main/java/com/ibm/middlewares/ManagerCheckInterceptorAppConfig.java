@@ -2,6 +2,7 @@ package com.ibm.middlewares;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -14,6 +15,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  */
 
 @Component
+@CrossOrigin(exposedHeaders = "*", allowedHeaders = "*", origins = "*")
 public class ManagerCheckInterceptorAppConfig implements WebMvcConfigurer {
 	@Autowired
 	ManagerCheckInterceptor managerCheckInterceptor;

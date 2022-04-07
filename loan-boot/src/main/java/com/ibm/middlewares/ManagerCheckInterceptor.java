@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import com.ibm.enums.RoleOptions;
@@ -19,18 +20,20 @@ import com.ibm.exception.GlobalLoanException;
  */
 
 @Component
+@CrossOrigin(exposedHeaders = "*", allowedHeaders = "*", origins = "*")
 public class ManagerCheckInterceptor implements HandlerInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
 
 //		System.err.println(request.getHeader("role"));
-		System.err.println("prehandle");
+		System.err.println("prehandle "+request.getHeader("role"));
 		if (request.getHeader("role") != null && request.getHeader("role").equals(RoleOptions.MANAGER.toString())) {
 			return true;
 		} else {
 			try {
 				response.setStatus(403);
-				response.getWriter().write("Your role is not a manager");
+//				response.getWriter().write("Your role is not a manager");
+				response.sendError(403, "Your role is not a manager");
 				return false;
 			} catch (IOException e) {
 				throw new GlobalLoanException("403", "Your role is not a manager the path maybe wrong");
