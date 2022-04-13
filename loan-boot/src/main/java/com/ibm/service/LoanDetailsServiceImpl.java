@@ -60,6 +60,14 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 		if (cust.getLoanDetail() == null || cust.getLoanDetail().getLoanStatus() == statusRej
 				|| cust.getLoanDetail().getLoanStatus() == status2Comp) {
 			// can add loanDetail if there's no ongoing loan
+			PaymentDetail pd = paymentDetailCalculator.apply(ld);
+			double part_sal=cust.getSalary()/3;
+			if(pd.getPaymentAmount()>(part_sal*2)) {
+				ld.setLoan_risk(RiskOptions.HIGHRISK);
+			}
+			else {
+				ld.setLoan_risk(RiskOptions.LOWRISK);
+			}
 
 			// setting customer to the loanDetail
 			ld.setCustomer(cust);
