@@ -49,7 +49,11 @@ public class CustomerController {
 
 	}
 	@PostMapping(path = "/get-customer-limit", consumes = "application/json")
-	public List<Integer> get_cus_limit(@RequestBody Customer cust) {
+	//public List<Integer> get_cus_limit(@RequestParam int cusID) {
+	public ResponseEntity<List<Integer>> get_cus_limit(@RequestParam int cusID) {
+		rh = new ResponseHeader();
+		rh.putOnMap("success", "true");
+		Customer cust=customerService.getCustomerById(cusID);
 		int civ=cust.getPan().getCibilScore();
 		int roi;
 		int principal;
@@ -69,8 +73,9 @@ public class CustomerController {
 		}
 		list.add(roi);
 		list.add(principal);	
-		
-		return list;
+		ResponseEntity<List<Integer>> res = new ResponseEntity<List<Integer>>(list,rh.getHeaders(), HttpStatus.OK);
+		return res;
+		//return list;
 
 	}
 
