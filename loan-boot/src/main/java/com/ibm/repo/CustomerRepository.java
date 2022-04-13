@@ -7,6 +7,14 @@ import com.ibm.entity.Customer;
 
 import com.ibm.entity.Pan;
 
+/**
+ * Class {CustomerRepository} is a repository interface
+ * for customer entity.
+ * 
+ * @author Subhajit Sanyal
+ * @author Saswata Dutta
+ */
+
 public interface CustomerRepository extends JpaRepository<Customer, Integer> {
 	Customer findByPan(Pan p);
 	@Query("FROM Customer c Where c.email=?1 OR c.phone=?2")

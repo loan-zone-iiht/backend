@@ -4,7 +4,7 @@ package com.ibm.pojo;
  * to handle the message recipient.
  * 
  * 
- * 
+ * @author Sayak Mukherjee
  */
 public class SMS {
 	

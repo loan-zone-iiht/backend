@@ -23,16 +23,19 @@ import com.ibm.enums.Dependents_option;
 import com.ibm.enums.GenderOptions;
 import com.ibm.enums.RoleOptions;
 import com.ibm.enums.property_type_options;
+
 /**
- * Class {Customer} is the entity defining the
- * fields of the customer table in DB.
+ * Class {Customer} is the entity defining the fields of the customer table in
+ * DB.
  * 
- * @JsonIdentityInfo handles JSON references,
- * and stops them becoming infinitely nested objects.
- * No need for JsonBackReference and JsonManagedReference anymore.
+ * @JsonIdentityInfo handles JSON references, and stops them becoming infinitely
+ *                   nested objects. No need for JsonBackReference and
+ *                   JsonManagedReference anymore.
  * 
- * 
+ * @author Sayak Mukherjee
  * @author Saswata Dutta
+ * @author Ashish Gupta
+ * @author Subhajit Sanyal
  */
 //@JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
@@ -41,8 +44,8 @@ import com.ibm.enums.property_type_options;
 public class Customer {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int id; // Bank account no.
 
-	private int id;
 //	@JsonIgnore
 	@OneToOne // can have one pan no
 	@JoinColumn(name = "pan_no")
@@ -77,11 +80,10 @@ public class Customer {
 	private Dependents_option dependents;
 	private boolean gradStat;
 	private boolean isSelfEmployed;
-	private int coApplicantIncome=0;
+	private int coApplicantIncome = 0;
 	private property_type_options propertyType;
-	
-	private Integer otp;
 
+	private Integer otp;
 
 	public GenderOptions getGender() {
 		return gender;
@@ -106,6 +108,7 @@ public class Customer {
 	public void setDependents(Dependents_option dependents) {
 		this.dependents = dependents;
 	}
+
 	public RoleOptions getRole() {
 		return role;
 	}
@@ -113,6 +116,7 @@ public class Customer {
 	public void setRole(RoleOptions role) {
 		this.role = role;
 	}
+
 	public boolean isGradStat() {
 		return gradStat;
 	}
@@ -154,8 +158,6 @@ public class Customer {
 		this.email = email;
 		this.phone = phone;
 	}
-	
-
 
 	public int getId() {
 		return id;
@@ -172,7 +174,6 @@ public class Customer {
 	public void setPan(Pan pan) {
 		this.pan = pan;
 	}
-
 
 	public String getName() {
 		return name;
@@ -206,7 +207,6 @@ public class Customer {
 		this.salary = salary;
 	}
 
-	
 	public LoanDetails getLoanDetail() {
 		return loanDetail;
 	}
@@ -230,6 +230,7 @@ public class Customer {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+
 	public Integer getOtp() {
 		return otp;
 	}
@@ -237,6 +238,7 @@ public class Customer {
 	public void setOtp(Integer otp) {
 		this.otp = otp;
 	}
+
 	@Override
 	public String toString() {
 		return "Customer [id=" + id + ", panNo=" + pan + ", name=" + name + ", email=" + email + ", phone=" + phone

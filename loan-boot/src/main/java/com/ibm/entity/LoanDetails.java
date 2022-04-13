@@ -18,10 +18,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -29,15 +26,17 @@ import com.ibm.enums.RiskOptions;
 import com.ibm.enums.StatusType;
 
 /**
- * Class {LoanDetails} is the entity defining the
- * fields of all the required details 
- * regarding a loan in the DB table.
+ * Class {LoanDetails} is the entity defining the fields of all the required
+ * details regarding a loan in the DB table.
  * 
- * @JsonIdentityInfo handles JSON references,
- * and stops them becoming infinitely nested objects.
- * No need for JsonBackReference and JsonManagedReference anymore.
+ * @JsonIdentityInfo handles JSON references, and stops them becoming infinitely
+ *                   nested objects. No need for JsonBackReference and
+ *                   JsonManagedReference anymore.
  * 
+ * @author Subhajit Sanyal
+ * @author Sayak Mukherjee
  * @author Saswata Dutta
+ * @author Ashish Gupta
  */
 
 @Entity
@@ -81,13 +80,17 @@ public class LoanDetails {
 	@Enumerated(EnumType.STRING) // only can have 4 types of values
 	@Column(name = "loan_status", length = 25)
 	private StatusType loanStatus;
+
+	@Column(name = "rejection_reason")
+	private String reason_rejection;
+
 	@Enumerated(EnumType.STRING)
 	private RiskOptions loan_risk;
+
 //	@Column(name = "outstanding_principal")
 //	private double outstandingPrincipal;
 //	@OneToMany(mappedBy = "loanDetailsId") // can have multiple nextPayback
 //	private ArrayList<NextPayback> nextPaybacks = new ArrayList<NextPayback>();
-
 
 	public RiskOptions getLoan_risk() {
 		return loan_risk;
@@ -114,6 +117,14 @@ public class LoanDetails {
 		this.dateEnd = dateEnd;
 		this.bankToCustPayout = bankToCustPayout;
 		this.loanStatus = loanStatus;
+	}
+
+	public String getReason_rejection() {
+		return reason_rejection;
+	}
+
+	public void setReason_rejection(String reason_rejection) {
+		this.reason_rejection = reason_rejection;
 	}
 
 	public int getLoanId() {
@@ -187,8 +198,6 @@ public class LoanDetails {
 	public void setDateEnd(LocalDate dateEnd) {
 		this.dateEnd = dateEnd;
 	}
-	
-	
 
 	public double getPaymentAmount() {
 		return paymentAmount;
@@ -213,8 +222,6 @@ public class LoanDetails {
 	public void setBankToCustPayout(boolean bankToCustPayout) {
 		this.bankToCustPayout = bankToCustPayout;
 	}
-
-
 
 	public StatusType getLoanStatus() {
 		return loanStatus;
