@@ -8,11 +8,17 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+/**
+ * Class {ResponseHeader} is a simple header class
+ * to give success response.  
+ * 
+ * @author Saswata Dutta
+ */
 @Component
 public class ResponseHeader {
 	MultiValueMap<String, String> headers = new HttpHeaders();
 	
-
+	// exposing a custom header for error handling.
 	public ResponseHeader() {
 		headers.add("Access-Control-Expose-Headers", "success");
 	}

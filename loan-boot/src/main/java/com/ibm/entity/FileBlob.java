@@ -13,7 +13,12 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 
 /**
@@ -36,6 +41,7 @@ public class FileBlob {
 	private int id;
 	@OneToOne
 	@JoinColumn(name = "cust_id")
+	@JsonIdentityReference(alwaysAsId = true)
 	private Customer customer;
 	@Column(name = "file_name")
 	private String fileName;
@@ -45,6 +51,7 @@ public class FileBlob {
 	private Boolean isProfile;
 	@Lob
 	@Column(name = "data_blob")
+	@JsonProperty(access = Access.WRITE_ONLY)
 	private byte[] dataBlob;
 	
 	public FileBlob() {

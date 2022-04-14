@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 /**
  * Class {GlobalExceptionAdvice} is the advice class of
  * exceptions for all the spring-boot controllers
@@ -37,5 +38,10 @@ public class GlobalExceptionAdvice {
 	(SQLIntegrityConstraintViolationException excptn) {
 		return new ResponseEntity<String>(excptn.getMessage(), HttpStatus.OK);
 	}
+	
+	@ExceptionHandler(MaxUploadSizeExceededException.class)
+	  public ResponseEntity<String> handleMaxSizeException(MaxUploadSizeExceededException excptn) {
+	    return new ResponseEntity<String>("File too large to upload!", HttpStatus.OK);
+	  }
 
 }

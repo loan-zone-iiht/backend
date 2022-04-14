@@ -155,8 +155,13 @@ public class LoanDetailsController {
 	}
 
 	@GetMapping(path = "/get-outstanding-principal", produces = "application/json")
-	public double getOutstandingPrincipal(@RequestParam int loanId) {
-		return loanDetailsService.getOutstandingPrincipal(loanId);
+	public ResponseEntity<Double> getOutstandingPrincipal(@RequestParam int loanId) {
+//		return loanDetailsService.getOutstandingPrincipal(loanId);
+		rh = new ResponseHeader();
+		rh.putOnMap("success", "true");
+		ResponseEntity<Double> res = new ResponseEntity<Double>(
+				loanDetailsService.getOutstandingPrincipal(loanId), rh.getHeaders(), HttpStatus.OK);
+		return res;
 	}
 
 	// to know the next payment amount

@@ -1,7 +1,7 @@
 package com.ibm.service;
 
-import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,9 +31,28 @@ public class FileBlobServiceImpl implements FileBlobService {
 	public FileBlob saveProfilePic(int custId, MultipartFile file) {
 		try {
 			Customer cust = custService.getCustomerById(custId);
-			String fileName = StringUtils.cleanPath(custId + "-" + file.getOriginalFilename() + "-" + LocalDate.now());
+			String fileName = StringUtils.cleanPath("custId-" + custId + "-" + LocalDate.now() + "-" + LocalTime.now()
+					+ "-" + file.getOriginalFilename());
 			FileBlob profileBlob = new FileBlob(cust, fileName, file.getContentType(), true, file.getBytes());
 			return fileBlobRepo.save(profileBlob);
+
+			/**
+			 * Don't delete. File download uri logic. Will need later.
+			 */
+			// file download uri name & extension
+//			String extension = FilenameUtils.getExtension(file.getOriginalFilename());
+//			String fileNameDownload = StringUtils.cleanPath(custId + "- profile");
+			// file download uri creation
+//			String fileDownloadUri = ServletUriComponentsBuilder
+//			          .fromCurrentContextPath()
+//			          .path("/files/")
+//			          .path(Integer.toString(profileBlob.getId()))
+//			          .toUriString();
+//			// file download uri set
+//			profileBlob.setFileUrl(fileDownloadUri);
+
+			// returning the final file response
+//			return fileBlobRepo.save(profileBlob);
 		} catch (Exception e) {
 			throw new GlobalLoanException("400", "Error getting file data");
 		}
