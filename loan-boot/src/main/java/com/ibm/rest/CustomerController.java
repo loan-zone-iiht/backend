@@ -82,10 +82,11 @@ public class CustomerController {
 	}
 
 	@PostMapping(path = "/get-customer-limit", consumes = "application/json")
-	public ResponseEntity<List<Integer>> get_cus_limit(@RequestParam int cusID) {
+	public ResponseEntity<List<Integer>> get_cus_limit(@RequestParam int cusID,@RequestParam double salery) {
 		rh = new ResponseHeader();
 		rh.putOnMap("success", "true");
 		Customer cust=customerService.getCustomerById(cusID);
+		cust.setSalary(salery);
 		int civ=cust.getPan().getCibilScore();
 		int roi;
 		int principal;
