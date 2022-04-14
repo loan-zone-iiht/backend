@@ -56,6 +56,9 @@ public class Customer {
 //	@JsonManagedReference
 	@OneToMany(mappedBy = "customer") // can have multiple payment histories
 	private List<PaymentHistory> paymentHistories = new ArrayList<PaymentHistory>();
+	@OneToOne // can have one pan no
+	@JoinColumn(name = "profile_pic")
+	private FileBlob profilePic;
 	@Column(length = 25)
 	private String name;
 	@Column(unique = true, length = 25)
