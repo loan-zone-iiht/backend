@@ -13,6 +13,7 @@ import com.ibm.entity.LoanDetails;
 import com.ibm.entity.Manager;
 import com.ibm.entity.PaymentHistory;
 import com.ibm.enums.PaymentType;
+import com.ibm.enums.RiskOptions;
 import com.ibm.enums.StatusType;
 import com.ibm.exception.GlobalLoanException;
 import com.ibm.pojo.PaymentDetail;
