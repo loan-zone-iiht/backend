@@ -82,8 +82,11 @@ public class CustomerController {
 	}
 
 	@PostMapping(path = "/get-customer-limit", consumes = "application/json")
-	public List<Integer> get_cus_limit(@RequestBody Customer cust) {
-		int civ = cust.getPan().getCibilScore();
+	public ResponseEntity<List<Integer>> get_cus_limit(@RequestParam int cusID) {
+		rh = new ResponseHeader();
+		rh.putOnMap("success", "true");
+		Customer cust=customerService.getCustomerById(cusID);
+		int civ=cust.getPan().getCibilScore();
 		int roi;
 		int principal;
 		List<Integer> list = new ArrayList<Integer>();
@@ -99,11 +102,11 @@ public class CustomerController {
 			principal = (int) fetch_principal(cust, roi);
 		}
 		list.add(roi);
-		list.add(principal);
+		list.add(principal);	
+		ResponseEntity<List<Integer>> res = new ResponseEntity<List<Integer>>(list,rh.getHeaders(), HttpStatus.OK);
+		return res;
 
-		return list;
-
-	}
+}
 
 	private double fetch_principal(Customer cust, int roi) {
 		double e = (cust.getSalary() / 100) * 20;

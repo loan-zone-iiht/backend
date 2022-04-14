@@ -26,15 +26,15 @@ public class ManagerCheckInterceptor implements HandlerInterceptor {
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
 
 //		System.err.println(request.getHeader("role"));
-		System.err.println("prehandle "+request.getHeader("role"));
-		if (request.getHeader("role") != null && request.getHeader("role").equals(RoleOptions.MANAGER.toString())) {
+		System.err.println("prehandle "+request.getParameter("role"));
+		if (request.getParameter("role") != null && request.getParameter("role").equals(RoleOptions.MANAGER.toString())) {
 			return true;
 		} else {
 			try {
-				response.setStatus(403);
+				response.setStatus(200);
 //				response.getWriter().write("Your role is not a manager");
-				response.sendError(403, "Your role is not a manager");
-				return false;
+				response.sendError(200, "Your role is not a manager");
+				return true;
 			} catch (IOException e) {
 				throw new GlobalLoanException("403", "Your role is not a manager the path maybe wrong");
 			}

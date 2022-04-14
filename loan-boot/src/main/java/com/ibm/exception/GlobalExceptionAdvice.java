@@ -18,12 +18,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class GlobalExceptionAdvice {
 	@ExceptionHandler(GlobalLoanException.class)
 	public ResponseEntity<String> handleGbLoanException(GlobalLoanException excptn) {
-		return new ResponseEntity<String>(excptn.getErrorMessage(), HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<String>(excptn.getErrorMessage(), HttpStatus.OK);
 	}
 
 	@ExceptionHandler(NoSuchElementException.class)
 	public ResponseEntity<String> handleNoSuchElException(NoSuchElementException excptn) {
-		return new ResponseEntity<String>("No such value present in DB", HttpStatus.NOT_FOUND);
+		return new ResponseEntity<String>("No such value present in DB", HttpStatus.OK);
 	}
 
 	@ExceptionHandler(IllegalArgumentException.class)
@@ -35,7 +35,7 @@ public class GlobalExceptionAdvice {
 	@ExceptionHandler(SQLIntegrityConstraintViolationException.class)
 	public ResponseEntity<String> handleSqlIntegrityException
 	(SQLIntegrityConstraintViolationException excptn) {
-		return new ResponseEntity<String>(excptn.getMessage(), HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<String>(excptn.getMessage(), HttpStatus.OK);
 	}
 
 }
