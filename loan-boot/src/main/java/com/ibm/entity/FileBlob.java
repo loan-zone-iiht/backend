@@ -41,6 +41,8 @@ public class FileBlob {
 	private String fileName;
 	@Column(name = "file_type")
 	private String fileType;
+	@Column(name = "is_profile")	// weather or not it's a profile pic
+	private Boolean isProfile;
 	@Lob
 	@Column(name = "data_blob")
 	private byte[] dataBlob;
@@ -52,6 +54,15 @@ public class FileBlob {
 		this.customer = customer;
 		this.fileName = fileName;
 		this.fileType = fileType;
+		this.dataBlob = dataBlob;
+	}
+	
+
+	public FileBlob(Customer customer, String fileName, String fileType, Boolean isProfile, byte[] dataBlob) {
+		this.customer = customer;
+		this.fileName = fileName;
+		this.fileType = fileType;
+		this.isProfile = isProfile;
 		this.dataBlob = dataBlob;
 	}
 
@@ -85,6 +96,16 @@ public class FileBlob {
 
 	public void setFileType(String fileType) {
 		this.fileType = fileType;
+	}
+	
+	
+
+	public Boolean getIsProfile() {
+		return isProfile;
+	}
+
+	public void setIsProfile(Boolean isProfile) {
+		this.isProfile = isProfile;
 	}
 
 	public byte[] getDataBlob() {
