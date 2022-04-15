@@ -58,7 +58,7 @@ public class FileBlobController {
 		return res;
 
 	}
-	
+
 	@PostMapping(path = "/upload-suporting-doc")
 	public ResponseEntity<FileBlob> uploadSupportingDoc(@RequestBody MultipartFile file, @RequestParam int custId) {
 		try {
@@ -71,5 +71,16 @@ public class FileBlobController {
 		} catch (IllegalArgumentException e) {
 			throw new GlobalLoanException("400", "Error uploading file/ try reselecting the file" + e.getMessage());
 		}
+	}
+
+	@GetMapping(path = "/get-supporting-doc")
+	public ResponseEntity<byte[]> getSupportingDoc(@RequestParam int custId) {
+//			return fileBlobService.getProfilePic(custId)
+		rh = new ResponseHeader();
+		rh.putOnMap("success", "true");
+		ResponseEntity<byte[]> res = new ResponseEntity<byte[]>(fileBlobService.getSupportingDoc(custId),
+				rh.getHeaders(), HttpStatus.OK);
+		return res;
+
 	}
 }
