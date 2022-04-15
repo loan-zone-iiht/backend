@@ -61,14 +61,14 @@ public class FileBlobServiceImpl implements FileBlobService {
 			// returning the final file response
 //			return fileBlobRepo.save(profileBlob);
 		} catch (Exception e) {
-			throw new GlobalLoanException("400", "Error getting file data"+ e.getLocalizedMessage());
+			throw new GlobalLoanException("400", "Error getting file data" + e.getLocalizedMessage());
 		}
 	}
 
 	@Override
 	public byte[] getProfilePic(int custId) {
 		try {
-			
+
 			Customer cust = custService.getCustomerById(custId);
 			return cust.getProfilePic().getDataBlob();
 		} catch (Exception e) {
@@ -76,9 +76,9 @@ public class FileBlobServiceImpl implements FileBlobService {
 			throw new GlobalLoanException("400", "No profile picture for user");
 		}
 	}
-	
+
 	@Override
-	public FileBlob saveSupprtingDoc(int custId, MultipartFile file) {
+	public FileBlob saveSupportingDoc(int custId, MultipartFile file) {
 		try {
 			Customer cust = custService.getCustomerById(custId);
 			String fileName = StringUtils.cleanPath("custId-" + custId + "-" + LocalDate.now() + "-" + LocalTime.now()
@@ -91,9 +91,18 @@ public class FileBlobServiceImpl implements FileBlobService {
 			return docBlob;
 
 		} catch (Exception e) {
-			throw new GlobalLoanException("400", "Error getting file data"+ e.getLocalizedMessage());
+			throw new GlobalLoanException("400", "Error getting file data" + e.getLocalizedMessage());
 		}
 	}
-	
+
+	@Override
+	public byte[] getSupportingDoc(int custId) {
+		try {
+			Customer cust = custService.getCustomerById(custId);
+			return cust.getSupportingDoc().getDataBlob();
+		} catch (Exception e) {
+			throw new GlobalLoanException("400", "No supporting document for user");
+		}
+	}
 
 }
