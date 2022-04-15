@@ -177,6 +177,16 @@ public class Customer {
 	public void setPan(Pan pan) {
 		this.pan = pan;
 	}
+	
+	
+
+	public FileBlob getProfilePic() {
+		return profilePic;
+	}
+
+	public void setProfilePic(FileBlob profilePic) {
+		this.profilePic = profilePic;
+	}
 
 	public String getName() {
 		return name;

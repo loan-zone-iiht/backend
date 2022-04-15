@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.ibm.entity.Customer;
 import com.ibm.entity.FileBlob;
 import com.ibm.exception.GlobalLoanException;
+import com.ibm.repo.CustomerRepository;
 import com.ibm.repo.FileBlobRepository;
 
 /**
@@ -26,6 +27,8 @@ public class FileBlobServiceImpl implements FileBlobService {
 	private FileBlobRepository fileBlobRepo;
 	@Autowired
 	private CustomerService custService;
+	@Autowired
+	private CustomerRepository customerRepo;
 
 	@Override
 	public FileBlob saveProfilePic(int custId, MultipartFile file) {
@@ -34,7 +37,11 @@ public class FileBlobServiceImpl implements FileBlobService {
 			String fileName = StringUtils.cleanPath("custId-" + custId + "-" + LocalDate.now() + "-" + LocalTime.now()
 					+ "-" + file.getOriginalFilename());
 			FileBlob profileBlob = new FileBlob(cust, fileName, file.getContentType(), true, file.getBytes());
-			return fileBlobRepo.save(profileBlob);
+			profileBlob = fileBlobRepo.save(profileBlob);
+			// setting profile pic in customer entity
+			cust.setProfilePic(profileBlob);
+			customerRepo.save(cust);
+			return profileBlob;
 
 			/**
 			 * Don't delete. File download uri logic. Will need later.
@@ -54,8 +61,22 @@ public class FileBlobServiceImpl implements FileBlobService {
 			// returning the final file response
 //			return fileBlobRepo.save(profileBlob);
 		} catch (Exception e) {
-			throw new GlobalLoanException("400", "Error getting file data");
+			throw new GlobalLoanException("400", "Error getting file data"+ e.getLocalizedMessage());
 		}
 	}
+
+	@Override
+	public byte[] getProfilePic(int custId) {
+		try {
+			
+			Customer cust = custService.getCustomerById(custId);
+			return cust.getProfilePic().getDataBlob();
+		} catch (Exception e) {
+			System.err.println(e.getLocalizedMessage());
+			throw new GlobalLoanException("400", "No profile picture for user");
+		}
+	}
+	
+	
 
 }

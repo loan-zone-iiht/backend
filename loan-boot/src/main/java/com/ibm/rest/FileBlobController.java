@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -13,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.ibm.entity.FileBlob;
 import com.ibm.exception.GlobalLoanException;
 import com.ibm.pojo.ResponseHeader;
+import com.ibm.service.CustomerService;
 import com.ibm.service.FileBlobService;
 
 /**
@@ -30,8 +32,10 @@ import com.ibm.service.FileBlobService;
 public class FileBlobController {
 	@Autowired
 	private FileBlobService fileBlobService;
+	@Autowired
+	private CustomerService customerService;
 	private ResponseHeader rh;
-	
+
 	@PostMapping(path = "/upload-profile-pic")
 	public ResponseEntity<FileBlob> uploadProfilePic(@RequestBody MultipartFile file, @RequestParam int custId) {
 		try {
@@ -42,9 +46,18 @@ public class FileBlobController {
 					rh.getHeaders(), HttpStatus.OK);
 			return res;
 		} catch (IllegalArgumentException e) {
-			throw new GlobalLoanException("400", "Error uploading file"+e.getMessage());
+			throw new GlobalLoanException("400", "Error uploading file/ try reselecting the file" + e.getMessage());
 		}
+	}
 
+	@GetMapping(path = "/get-profile-pic")
+	public ResponseEntity<byte[]> getProfilePic(@RequestParam int custId) {
+//			return fileBlobService.getProfilePic(custId)
+		rh = new ResponseHeader();
+		rh.putOnMap("success", "true");
+		ResponseEntity<byte[]> res = new ResponseEntity<byte[]>(fileBlobService.getProfilePic(custId), rh.getHeaders(),
+				HttpStatus.OK);
+		return res;
 
 	}
 }
