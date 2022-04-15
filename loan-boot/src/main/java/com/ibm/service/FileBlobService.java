@@ -17,5 +17,5 @@ import com.ibm.entity.FileBlob;
 
 public interface FileBlobService {
 	FileBlob saveProfilePic(int custId, MultipartFile file);
-	
+	byte[] getProfilePic(int custId);
 }
