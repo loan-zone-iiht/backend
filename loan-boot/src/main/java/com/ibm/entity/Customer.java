@@ -56,9 +56,12 @@ public class Customer {
 //	@JsonManagedReference
 	@OneToMany(mappedBy = "customer") // can have multiple payment histories
 	private List<PaymentHistory> paymentHistories = new ArrayList<PaymentHistory>();
-	@OneToOne // can have one pan no
+	@OneToOne
 	@JoinColumn(name = "profile_pic")
 	private FileBlob profilePic;
+	@OneToOne
+	@JoinColumn(name = "supporting_doc")
+	private FileBlob supportingDoc;
 	@Column(length = 25)
 	private String name;
 	@Column(unique = true, length = 25)
@@ -85,8 +88,17 @@ public class Customer {
 	private boolean isSelfEmployed;
 	private int coApplicantIncome = 0;
 	private property_type_options propertyType;
-
 	private Integer otp;
+	
+	public Customer() {
+	}
+
+	public Customer(Pan pan, String name, String email, String phone) {
+		this.pan = pan;
+		this.name = name;
+		this.email = email;
+		this.phone = phone;
+	}
 
 	public GenderOptions getGender() {
 		return gender;
@@ -152,15 +164,7 @@ public class Customer {
 		this.propertyType = propertyType;
 	}
 
-	public Customer() {
-	}
-
-	public Customer(Pan pan, String name, String email, String phone) {
-		this.pan = pan;
-		this.name = name;
-		this.email = email;
-		this.phone = phone;
-	}
+	
 
 	public int getId() {
 		return id;
@@ -186,6 +190,16 @@ public class Customer {
 
 	public void setProfilePic(FileBlob profilePic) {
 		this.profilePic = profilePic;
+	}
+
+	
+	
+	public FileBlob getSupportingDoc() {
+		return supportingDoc;
+	}
+
+	public void setSupportingDoc(FileBlob supportingDoc) {
+		this.supportingDoc = supportingDoc;
 	}
 
 	public String getName() {

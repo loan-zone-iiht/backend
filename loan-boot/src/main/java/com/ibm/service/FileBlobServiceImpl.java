@@ -77,6 +77,23 @@ public class FileBlobServiceImpl implements FileBlobService {
 		}
 	}
 	
+	@Override
+	public FileBlob saveSupprtingDoc(int custId, MultipartFile file) {
+		try {
+			Customer cust = custService.getCustomerById(custId);
+			String fileName = StringUtils.cleanPath("custId-" + custId + "-" + LocalDate.now() + "-" + LocalTime.now()
+					+ "-" + file.getOriginalFilename());
+			FileBlob docBlob = new FileBlob(cust, fileName, file.getContentType(), false, file.getBytes());
+			docBlob = fileBlobRepo.save(docBlob);
+			// setting profile pic in customer entity
+			cust.setSupportingDoc(docBlob);
+			customerRepo.save(cust);
+			return docBlob;
+
+		} catch (Exception e) {
+			throw new GlobalLoanException("400", "Error getting file data"+ e.getLocalizedMessage());
+		}
+	}
 	
 
 }
