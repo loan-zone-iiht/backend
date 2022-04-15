@@ -62,11 +62,10 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 				|| cust.getLoanDetail().getLoanStatus() == status2Comp) {
 			// can add loanDetail if there's no ongoing loan
 			PaymentDetail pd = paymentDetailCalculator.apply(ld);
-			double part_sal=cust.getSalary()/3;
-			if(pd.getPaymentAmount()>(part_sal*2)) {
+			double part_sal = cust.getSalary() / 3;
+			if (pd.getPaymentAmount() > (part_sal * 2)) {
 				ld.setLoan_risk(RiskOptions.HIGHRISK);
-			}
-			else {
+			} else {
 				ld.setLoan_risk(RiskOptions.LOWRISK);
 			}
 
@@ -140,6 +139,14 @@ public class LoanDetailsServiceImpl implements LoanDetailsService {
 				/******************
 				 * Next payment date
 				 *******************/
+			} else if (ld.getLoanStatus() == status.FORECLOSURE_PENDING) {
+				// sending mail Your loan foreclosure is rejected
+				String mailContent = "Your loan application for foreclosure is rejected";
+
+				mailSender.setEmailSubject("Sorry, your foreclosure application has been rejected.");
+				mailSender.setReceiverEmail(ld.getCustomer().getEmail());
+				mailSender.setEmailContent(mailContent);
+				mailSender.sendEmail();
 			} else {
 				throw new GlobalLoanException("400",
 						"Current status of the loan should be PENDING, it's: " + ld.getLoanStatus());

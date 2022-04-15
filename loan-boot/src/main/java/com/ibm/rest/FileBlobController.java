@@ -65,7 +65,7 @@ public class FileBlobController {
 //			return fileBlobService.saveProfilePic(custId, file);
 			rh = new ResponseHeader();
 			rh.putOnMap("success", "true");
-			ResponseEntity<FileBlob> res = new ResponseEntity<FileBlob>(fileBlobService.saveSupprtingDoc(custId, file),
+			ResponseEntity<FileBlob> res = new ResponseEntity<FileBlob>(fileBlobService.saveSupportingDoc(custId, file),
 					rh.getHeaders(), HttpStatus.OK);
 			return res;
 		} catch (IllegalArgumentException e) {
