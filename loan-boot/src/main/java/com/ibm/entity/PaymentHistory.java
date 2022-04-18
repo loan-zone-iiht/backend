@@ -35,7 +35,7 @@ import com.ibm.enums.SuccessType;
  */
 @Entity
 @Table(name = "loan_payment_history_boot")
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id") // json infy
+@JsonIdentityInfo(generator = ObjectIdGenerators.None.class, property = "id") // json infy
 public class PaymentHistory {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
