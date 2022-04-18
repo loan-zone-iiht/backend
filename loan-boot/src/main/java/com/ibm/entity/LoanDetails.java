@@ -41,7 +41,7 @@ import com.ibm.enums.StatusType;
 
 @Entity
 @Table(name = "loan_loan_details_boot")
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "loanId") // json infy
+@JsonIdentityInfo(generator = ObjectIdGenerators.None.class, property = "loanId") // json infy
 public class LoanDetails {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
