@@ -1,38 +1,35 @@
 package com.ibm.email;
 
+import com.sendgrid.*;
+import com.sendgrid.helpers.mail.Mail;
+import com.sendgrid.helpers.mail.objects.Content;
+import com.sendgrid.helpers.mail.objects.Email;
+import com.sendgrid.Response;
+
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
-import com.amazonaws.services.simpleemail.model.Body;
-import com.amazonaws.services.simpleemail.model.Content;
-import com.amazonaws.services.simpleemail.model.Destination;
-import com.amazonaws.services.simpleemail.model.Message;
-import com.amazonaws.services.simpleemail.model.SendEmailRequest;
-/**
- * Class {MailSender} is to send emails with customized body and headers,
- * to desired recipient.
- * 
- * @see {AwsConfig}
- * @author Saswata Dutta
- */
-@Component
+@Service
 public class MailSender {
 	
-	@Autowired(required = false)
-	public AmazonSimpleEmailService amazonSimpleEmailService;
+	@Autowired
+	SendGrid sendGrid;
 	@Value("${mail.sender}")
+	
 	private String senderEmail;
 	private String emailContent;
 	private String receiverEmail;
 	private String emailSubject;
-
+	
 	public MailSender() {
 		this.emailContent = this.getContentSD("Default email");
 
 		this.senderEmail = "teamloanzone@gmail.com";
-		this.receiverEmail = "teamloanzone@gmail.com";
+		this.receiverEmail = "chatterjeeraktim1998@gmail.com";
 		this.emailSubject = "Loan zone updates";
 	}
 
@@ -42,28 +39,31 @@ public class MailSender {
 		this.receiverEmail = receiverEmail;
 		this.emailSubject = emailSubject;
 	}
+	  
+public void sendEmail() {
+	  
+	Email from = new Email("teamloanzone@gmail.com");
+    String subject = "Loan zone updates";
+    Email to = new Email("chatterjeeraktim1998@gmail.com");
+    Content content = new Content("text/plain", "Default email");
+    Mail mail = new Mail(from, subject, to, content);
 
-	public void sendEmail() {
-
-		try {
-			System.err.println("Mail sending to "+this.receiverEmail);
-			SendEmailRequest sendEmailRequest = new SendEmailRequest()
-					.withDestination(new Destination().withToAddresses(receiverEmail))
-					.withMessage(new Message()
-							.withBody(new Body().withHtml(new Content().withCharset("UTF-8").withData(emailContent)))
-							.withSubject(new Content().withCharset("UTF-8").withData(emailSubject)))
-					.withSource(senderEmail);
-			amazonSimpleEmailService.sendEmail(sendEmailRequest);
-			System.err.println("Mail sent to "+ this.receiverEmail);
-		} catch (Exception e) {
-			System.err.println("Mail sending failed");
-			e.printStackTrace();
+    
+    Request request = new Request();
+    try {
+      request.setMethod(Method.POST);
+      request.setEndpoint("mail/send");
+      request.setBody(mail.build());
+      Response response = this.sendGrid.api(request);
+      System.out.println(response.getStatusCode());
+      System.out.println(response.getBody());
+      System.out.println(response.getHeaders());
+    } catch (IOException ex) {
+    		System.out.println(ex.getMessage());
 		}
-	}
-	
-	
-
-	public String getEmailContent() {
+  }
+  
+  public String getEmailContent() {
 		return emailContent;
 	}
 
@@ -270,5 +270,4 @@ public class MailSender {
 
 		return content;
 	}
-
 }
