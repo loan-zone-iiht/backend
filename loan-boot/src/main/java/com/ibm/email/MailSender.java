@@ -1,35 +1,40 @@
 package com.ibm.email;
 
-import com.sendgrid.*;
-import com.sendgrid.helpers.mail.Mail;
-import com.sendgrid.helpers.mail.objects.Content;
-import com.sendgrid.helpers.mail.objects.Email;
-import com.sendgrid.Response;
-
-import java.io.IOException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
-@Service
+import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
+import com.amazonaws.services.simpleemail.model.Body;
+import com.amazonaws.services.simpleemail.model.Content;
+import com.amazonaws.services.simpleemail.model.Destination;
+import com.amazonaws.services.simpleemail.model.Message;
+import com.amazonaws.services.simpleemail.model.SendEmailRequest;
+/**
+ * Class {MailSender} is to send emails with customized body and headers,
+ * to desired recipient.
+ * 
+ * @see {AwsConfig}
+ * @author Raktim Chatterjee
+ * @author Sayak Mukherjee
+ * @author Saswata Dutta
+ */
+@Component
 public class MailSender {
 	
-	@Autowired
-	SendGrid sendGrid;
+	@Autowired(required = false)
+	public AmazonSimpleEmailService amazonSimpleEmailService;
 	@Value("${mail.sender}")
-	
 	private String senderEmail;
 	private String emailContent;
 	private String receiverEmail;
 	private String emailSubject;
-	
+
 	public MailSender() {
 		this.emailContent = this.getContentSD("Default email");
 
 		this.senderEmail = "teamloanzone@gmail.com";
-		this.receiverEmail = "chatterjeeraktim1998@gmail.com";
+		this.receiverEmail = "teamloanzone@gmail.com";
 		this.emailSubject = "Loan zone updates";
 	}
 
@@ -39,31 +44,28 @@ public class MailSender {
 		this.receiverEmail = receiverEmail;
 		this.emailSubject = emailSubject;
 	}
-	  
-public void sendEmail() {
-	  
-	Email from = new Email("teamloanzone@gmail.com");
-    String subject = "Loan zone updates";
-    Email to = new Email("chatterjeeraktim1998@gmail.com");
-    Content content = new Content("text/plain", "Default email");
-    Mail mail = new Mail(from, subject, to, content);
 
-    
-    Request request = new Request();
-    try {
-      request.setMethod(Method.POST);
-      request.setEndpoint("mail/send");
-      request.setBody(mail.build());
-      Response response = this.sendGrid.api(request);
-      System.out.println(response.getStatusCode());
-      System.out.println(response.getBody());
-      System.out.println(response.getHeaders());
-    } catch (IOException ex) {
-    		System.out.println(ex.getMessage());
+	public void sendEmail() {
+
+		try {
+			System.err.println("Mail sending to "+this.receiverEmail);
+			SendEmailRequest sendEmailRequest = new SendEmailRequest()
+					.withDestination(new Destination().withToAddresses(receiverEmail))
+					.withMessage(new Message()
+							.withBody(new Body().withHtml(new Content().withCharset("UTF-8").withData(emailContent)))
+							.withSubject(new Content().withCharset("UTF-8").withData(emailSubject)))
+					.withSource(senderEmail);
+			amazonSimpleEmailService.sendEmail(sendEmailRequest);
+			System.err.println("Mail sent to "+ this.receiverEmail);
+		} catch (Exception e) {
+			System.err.println("Mail sending failed");
+			e.printStackTrace();
 		}
-  }
-  
-  public String getEmailContent() {
+	}
+	
+	
+
+	public String getEmailContent() {
 		return emailContent;
 	}
 
@@ -170,7 +172,7 @@ public void sendEmail() {
 				+ "<tbody>\n" + "<tr>\n"
 				+ "<td class=\"column column-1\" style=\"mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top;\" width=\"100%\">\n"
 				+ "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"mso-table-lspace: 0pt; mso-table-rspace: 0pt;\" width=\"100%\">\n"
-				+ "<tr>\n" + "<td class=\"border\" style=\"width:30px;background-color:#FFFFFF\"> </td>\n"
+				+ "<tr>\n" + "<td class=\"border\" style=\"width:30px;background-color:#FFFFFF\"> </td>\n"
 				+ "<td class=\"content_blocks\" style=\"padding-top:0px;padding-bottom:0px;border-top:0px;border-bottom:0px;width:580px;\">\n"
 				+ "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"divider_block\" role=\"presentation\" style=\"mso-table-lspace: 0pt; mso-table-rspace: 0pt;\" width=\"100%\">\n"
 				+ "<tr>\n" + "<td>\n" + "<div align=\"center\">\n"
@@ -197,11 +199,11 @@ public void sendEmail() {
 				+ "<div style=\"font-family: sans-serif\">\n"
 				+ "<div style=\"font-size: 12px; font-family: Montserrat, Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif; mso-line-height-alt: 18px; color: #555555; line-height: 1.5;\">\n"
 				+ "<p style=\"margin: 0; font-size: 14px; text-align: left;\"> " + message + " </p>\n"
-				+ "<p style=\"margin: 0; font-size: 14px; text-align: left; mso-line-height-alt: 18px;\"> </p>\n"
+				+ "<p style=\"margin: 0; font-size: 14px; text-align: left; mso-line-height-alt: 18px;\"> </p>\n"
 				+ "<p style=\"margin: 0; font-size: 14px; text-align: left; mso-line-height-alt: 22.5px;\"><span style=\"color:#2b303a;font-size:15px;\">Thank you,</span></p>\n"
 				+ "<p style=\"margin: 0; font-size: 14px; text-align: left; mso-line-height-alt: 22.5px;\"><span style=\"color:#2b303a;font-size:15px;\">Team Loan Zone</span></p>\n"
 				+ "</div>\n" + "</div>\n" + "</td>\n" + "</tr>\n" + "</table>\n" + "</td>\n"
-				+ "<td class=\"border\" style=\"width:30px;background-color:#FFFFFF\"> </td>\n" + "</tr>\n"
+				+ "<td class=\"border\" style=\"width:30px;background-color:#FFFFFF\"> </td>\n" + "</tr>\n"
 				+ "</table>\n" + "</td>\n" + "</tr>\n" + "</tbody>\n" + "</table>\n" + "</td>\n" + "</tr>\n"
 				+ "</tbody>\n" + "</table>\n"
 				+ "<table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"row row-4\" role=\"presentation\" style=\"mso-table-lspace: 0pt; mso-table-rspace: 0pt;\" width=\"100%\">\n"
@@ -270,4 +272,5 @@ public void sendEmail() {
 
 		return content;
 	}
+
 }
