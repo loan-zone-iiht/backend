@@ -65,9 +65,14 @@ public class CustomerController {
 	}
 
 	@PostMapping(path = "/customer-send-otp", consumes = "application/json")
-	public Customer customerCheckOtp(@RequestBody LoginPOJO login) {
+	public ResponseEntity<Customer> customerCheckOtp(@RequestBody LoginPOJO login) {
 
-		return customerService.sendOtp(login.getEmail(), login.getPhone());
+//		return customerService.sendOtp(login.getEmail(), login.getPhone());
+		rh = new ResponseHeader();
+		rh.putOnMap("success", "true");
+		ResponseEntity<Customer> res = new ResponseEntity<Customer>(
+				customerService.sendOtp(login.getEmail(), login.getPhone()), rh.getHeaders(), HttpStatus.OK);
+		return res;
 	}
 
 	@PostMapping(path = "/update-customer", consumes = "application/json")
@@ -82,12 +87,12 @@ public class CustomerController {
 	}
 
 	@PostMapping(path = "/get-customer-limit", consumes = "application/json")
-	public ResponseEntity<List<Integer>> get_cus_limit(@RequestParam int cusID,@RequestParam double salery) {
+	public ResponseEntity<List<Integer>> get_cus_limit(@RequestParam int cusID, @RequestParam double salery) {
 		rh = new ResponseHeader();
 		rh.putOnMap("success", "true");
-		Customer cust=customerService.getCustomerById(cusID);
+		Customer cust = customerService.getCustomerById(cusID);
 		cust.setSalary(salery);
-		int civ=cust.getPan().getCibilScore();
+		int civ = cust.getPan().getCibilScore();
 		int roi;
 		int principal;
 		List<Integer> list = new ArrayList<Integer>();
@@ -103,11 +108,11 @@ public class CustomerController {
 			principal = (int) fetch_principal(cust, roi);
 		}
 		list.add(roi);
-		list.add(principal);	
-		ResponseEntity<List<Integer>> res = new ResponseEntity<List<Integer>>(list,rh.getHeaders(), HttpStatus.OK);
+		list.add(principal);
+		ResponseEntity<List<Integer>> res = new ResponseEntity<List<Integer>>(list, rh.getHeaders(), HttpStatus.OK);
 		return res;
 
-}
+	}
 
 	private double fetch_principal(Customer cust, int roi) {
 		double e = (cust.getSalary() / 100) * 20;
